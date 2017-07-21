@@ -131,16 +131,21 @@ namespace Piper_David_Proj_P1 {
         }
 
         private char decryptChar(char character) {
-            switch (_currentCipher) {
-            case 1:
-                return cipher1_decrypt(character);
-                break;
-            case 2:
-                return cipher2_decrypt(character);
-                break;
-            default: //3
-                return cipher3_decrypt(character);
-                break;
+            char workingChar = Char.ToUpper(character);
+            if (workingChar < 'A' || workingChar > 'Z') {
+                return workingChar; // only decrypt A-Z or a-z
+            } else {
+                switch (_currentCipher) {
+                case 1:
+                    return cipher1_decrypt(workingChar);
+                    break;
+                case 2:
+                    return cipher2_decrypt(workingChar);
+                    break;
+                default: //3
+                    return cipher3_decrypt(workingChar);
+                    break;
+                }
             }
         }
 
