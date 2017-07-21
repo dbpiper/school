@@ -58,6 +58,7 @@
             this.buttonBrowseOutput.TabIndex = 2;
             this.buttonBrowseOutput.Text = "Browse";
             this.buttonBrowseOutput.UseVisualStyleBackColor = true;
+            this.buttonBrowseOutput.Click += new System.EventHandler(this.buttonBrowseOutput_Click);
             // 
             // labelInput
             // 
@@ -103,6 +104,7 @@
             this.buttonRun.TabIndex = 8;
             this.buttonRun.Text = "Run";
             this.buttonRun.UseVisualStyleBackColor = true;
+            this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
             // 
             // Form1
             // 
@@ -118,7 +120,8 @@
             this.Controls.Add(this.textBoxInput);
             this.Controls.Add(this.buttonBrowseInput);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Piper_David_Proj_1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
