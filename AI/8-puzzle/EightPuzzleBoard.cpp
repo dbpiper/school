@@ -67,7 +67,7 @@ vector<EightPuzzleMove> EightPuzzleBoard::validMoves()
 tuple<int, int> EightPuzzleBoard::findBlankPiece()
 {
     for (int i = 0; i < pieces.size(); i++) {
-        for (int j = 0; i < pieces.at(i).size(); j++) {
+        for (int j = 0; j < pieces.at(i).size(); j++) {
             if (pieces.at(i).at(j) == 0) {
                 return make_tuple(i, j);
             }
