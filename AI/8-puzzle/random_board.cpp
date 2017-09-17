@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
             EightPuzzleMove moveToMake = validMoves.at(randomNumber);
             board.makeMove(moveToMake);
         }
-
+        cout << endl;
         board.printBoard();
     }
     return 0;

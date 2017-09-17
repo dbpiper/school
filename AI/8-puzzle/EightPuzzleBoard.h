@@ -16,6 +16,7 @@ class EightPuzzleBoard
    vector< vector<int> > pieces;
 
 public:
+    EightPuzzleBoard(vector< vector<int> > pieces);
     EightPuzzleBoard(istream& input);
     // vector of ((int, int), (int, int))
     // the two tuples are indices of pieces to swap
@@ -39,6 +40,9 @@ public:
     void makeMove(EightPuzzleMove move);
     string toString();
     void printBoard();
+    vector < vector<int> > getPieces(); 
+    bool isEqualTo(EightPuzzleBoard otherBoard);
+
 };
 
 #endif

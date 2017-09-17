@@ -4,6 +4,11 @@
 
 #include "EightPuzzleBoard.h"
 
+EightPuzzleBoard::EightPuzzleBoard(vector< vector<int> > pieces) :
+    pieces(pieces)
+{
+}
+
 /* expects a stream with the following format
    
    0 1 2
@@ -15,7 +20,7 @@ EightPuzzleBoard::EightPuzzleBoard(istream& input)
     int temp;
     const int numCols = 3;
     const int numRows = 3;
-
+    cout << "Enter a board: " << endl;
     for (int j = 0; j < numRows; j++) {
         vector<int> row;
         for (int i = 0; i < numCols; i++) {
@@ -25,6 +30,11 @@ EightPuzzleBoard::EightPuzzleBoard(istream& input)
         pieces.push_back(row);
     }
 } 
+
+vector < vector<int> > EightPuzzleBoard::getPieces()
+{
+    return pieces;
+}
 
 string EightPuzzleBoard::toString()
 {
@@ -126,4 +136,9 @@ void EightPuzzleBoard::makeMove(EightPuzzleMove move)
         pieces.at(get<0>(secondPiece)).at(get<1>(secondPiece));
     // assign the secondPiece to the firstPiece
     pieces.at(get<0>(secondPiece)).at(get<1>(secondPiece)) = temp;
+}
+
+bool EightPuzzleBoard::isEqualTo(EightPuzzleBoard otherBoard)
+{
+   return getPieces() == otherBoard.getPieces(); 
 }
