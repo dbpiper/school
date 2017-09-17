@@ -42,6 +42,7 @@ public:
     void printBoard();
     vector < vector<int> > getPieces(); 
     bool isEqualTo(EightPuzzleBoard otherBoard);
+    tuple<int, int> indicesOfElement(int number);
 
 };
 

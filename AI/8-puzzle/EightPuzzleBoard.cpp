@@ -142,3 +142,18 @@ bool EightPuzzleBoard::isEqualTo(EightPuzzleBoard otherBoard)
 {
    return getPieces() == otherBoard.getPieces(); 
 }
+
+
+// finds the row and column of the number
+// to be combined with goal
+tuple<int, int>  EightPuzzleBoard::indicesOfElement(int number)
+{
+    vector< vector<int> > pieces = getPieces();
+    for (int i = 0; i < pieces.size(); i++) {
+        for (int j = 0; j < pieces.at(i).size(); j++) {
+            if (pieces.at(i).at(j) == number) {
+                return make_tuple(i, j);
+            }
+        }
+    }
+}

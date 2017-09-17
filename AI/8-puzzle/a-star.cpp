@@ -7,6 +7,7 @@
 #include "a-star.h"
 
 #include "EightPuzzleNodeManager.h"
+#include "EightPuzzleNode.h"
 
 int main(int argc, char *argv[])
 {
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
                 int N = maxNodesInMem;
                 int V = visited;
                 int d = countDepthOfOptimal(currentNode);
-                int b = calculateBranchingFactor(N, d);      
+                double b = calculateBranchingFactor(N, d);      
 
                 cout << "V=" << V << endl;
                 cout << "N=" << N << endl;
@@ -59,11 +60,15 @@ int main(int argc, char *argv[])
                 printStartToGoal(currentNode);
                 break;
             } else { // this isn't the goal
+                currentNode->printNodeDebug();
                 // get the successors who aren't on the closed list
                 vector<EightPuzzleNode*> children =
                     currentNode->getSuccessors(closed);
                 for (int i = 0; i < children.size(); i++) {
                     open.push_back(children.at(i));
+                    // this was an idea to try to speed it up
+                    //if (!isNodeInOpen(open, children.at(i))) {
+                    //}
                 }
                 closed.push_back(currentNode);
                 sort(open.begin(), open.end(), EightPuzzleNode::comparisonFunction);
@@ -80,6 +85,7 @@ void printStartToGoal(EightPuzzleNode* endState)
     for (currentState = endState; currentState != NULL; 
         currentState = currentState->parent) {
         optimalPath.push_back(currentState);    
+    
     }
     reverse(optimalPath.begin(), optimalPath.end());
     for (auto state : optimalPath) {
@@ -100,5 +106,19 @@ int countDepthOfOptimal(EightPuzzleNode* endState)
 
 double calculateBranchingFactor(int N, int d)
 {
-    return pow(N, 1.0/d);
+    return pow((double)N, 1.0/(double)d);
+}
+
+bool isNodeInOpen(vector<EightPuzzleNode*> open,
+    EightPuzzleNode* node)
+{
+    bool inOpen = false;
+    for (auto openNode : open) {
+        if (node->areBoardsSame((*openNode)) ) {
+        // not less so greater than or equal to
+           //&& !node->compareToNode((*openNode)))  {
+            inOpen = true;
+        }
+    }
+    return inOpen;
 }

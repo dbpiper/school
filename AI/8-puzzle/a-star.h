@@ -12,5 +12,7 @@
 void printStartToGoal(EightPuzzleNode* endState);
 int countDepthOfOptimal(EightPuzzleNode* endState);
 double calculateBranchingFactor(int N, int d);
+bool isNodeInOpen(vector<EightPuzzleNode*> open,
+    EightPuzzleNode* node);
 
 #endif

@@ -7,30 +7,51 @@ using namespace std;
 unsigned int EightPuzzleNode::nextId = 0;
 
 // returns whether or not node1 < node2
+// false means 0 or 1
+// true means -1
 bool EightPuzzleNode::comparisonFunction(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 {
-    if (node1->areBoardsSame((*node2))) {
+    int comparison = node1->compareToNode((*node2));
+    // 0 ==
+    // not less than
+    if (comparison == 0) {
         return false;
-    } else if (node1->getScore() < node2->getScore()) {
+    } else if (comparison == 1) {
+        return false;
+        // is less than
+    } else {
         return true;
-    } else if (node1->getScore() > node2->getScore()) {
-        return false;
+    }
+}
+
+// less is better
+// compare two nodes:
+// returns  0 if equal
+// returns -1 if this node is "less than" the other node
+// returns  1 if this node is "greater than" the other node
+int EightPuzzleNode::compareToNode(EightPuzzleNode& node)
+{
+    if (areBoardsSame(node)) {
+        return 0;
+    } else if (score < node.getScore()) {
+        return -1;
+    } else if (score > node.getScore()) {
+        return 1;
     } else { // if (score == node.getScore())
-       if (node1->getId() < node2->getId()) {
-            return true;
+       if (id < node.id) { //prefer newer nodes
+            return 1; 
        } else { // id is greater (likely) 
                 // or same (shouldn't happen)
-            return false;
+            return -1;
        }
     }
-    
 }
 
 // create a node from scratch
 EightPuzzleNode::EightPuzzleNode(EightPuzzleNode*
     parent, EightPuzzleBoard board, EightPuzzleNodeManager& manager) :
-        parent(parent), board(board), steps(steps), manager(manager)
+        parent(parent), board(board), manager(manager) // steps = 0
 {
     // score is steps + heuristic score
     score = steps + calculateHeuristicScore(); 
@@ -118,14 +139,60 @@ int EightPuzzleNode::calculateHeuristicDisplacement()
 int EightPuzzleNode::calculateHeuristicManhattan()
 {
     int score = 0;
-    // TODO: write function for manhattan
+    // goal board
+    vector< vector<int> > goalPieces = 
+        { {0, 1, 2}, 
+          {3, 4, 5},
+          {6, 7, 8} 
+        };
+    EightPuzzleBoard goal{goalPieces};
+    
+    vector< vector<int> > myPieces = board.getPieces();
+    
+    for (int i = 0; i < myPieces.size(); i++) {
+        for (int j = 0; j < myPieces.at(i).size(); j++) {
+            int currentNumber = myPieces.at(i).at(j);
+            if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
+                tuple<int, int> goalIndices =
+                    goal.indicesOfElement(currentNumber);
+                score += (abs(get<0>(goalIndices)-i)) +
+                    (abs(get<1>(goalIndices)-j));
+            }
+        }
+    }
+
     return score;
 }
 
 int EightPuzzleNode::calculateHeuristicTilesOutRowCol()
 {
     int score = 0;
-    // TODO: write function for tiles out row col
+    // goal board
+    vector< vector<int> > goalPieces = 
+        { {0, 1, 2}, 
+          {3, 4, 5},
+          {6, 7, 8} 
+        };
+    EightPuzzleBoard goal{goalPieces};
+    
+    vector< vector<int> > myPieces = board.getPieces();
+    
+    for (int i = 0; i < myPieces.size(); i++) {
+        for (int j = 0; j < myPieces.at(i).size(); j++) {
+            int currentNumber = myPieces.at(i).at(j);
+            if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
+                tuple<int, int> goalIndices =
+                    goal.indicesOfElement(currentNumber);
+                if (get<0>(goalIndices) != i) {
+                    score++;
+                }
+
+                if (get<1>(goalIndices) != j) {
+                    score++;
+                }
+            }
+        }
+    }
     return score;
 }
 
@@ -170,27 +237,6 @@ unsigned int EightPuzzleNode::getId()
     return id;
 }
 
-// compare two nodes:
-// returns  0 if equal
-// returns -1 if this node is "less than" the other node
-// returns  1 if this node is "greater than" the other node
-int EightPuzzleNode::compareToNode(EightPuzzleNode& node)
-{
-    if (areBoardsSame(node)) {
-        return 0;
-    } else if (score < node.getScore()) {
-        return -1;
-    } else if (score > node.getScore()) {
-        return 1;
-    } else { // if (score == node.getScore())
-       if (id < node.id) {
-            return -1;
-       } else { // id is greater (likely) 
-                // or same (shouldn't happen)
-            return 1;
-       }
-    }
-}
 
 bool EightPuzzleNode::isGoal()
 {
@@ -216,6 +262,17 @@ void EightPuzzleNode::printNode()
     string strNode = toString();
     cout << strNode << endl;
 }
+
+void EightPuzzleNode::printNodeDebug()
+{
+    string strNode = "";
+    strNode += "Id: " + to_string(id) + '\n';
+    strNode += "Score: " + to_string(score) + '\n';
+    strNode += "Steps: " + to_string(steps) + '\n';
+    strNode += toString();
+    cout << strNode << endl;
+}
+
 
 EightPuzzleBoard EightPuzzleNode::getBoard()
 {

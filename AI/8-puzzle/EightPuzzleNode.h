@@ -51,6 +51,7 @@ public:
     bool isGoal();
     string toString();
     void printNode();
+    void printNodeDebug();
     bool areBoardsSame(EightPuzzleNode& node);
     EightPuzzleBoard getBoard();
 };
