@@ -9,10 +9,10 @@
 
 #include "a-star.h"
 
-#include "EightPuzzleNodeManager.h"
-#include "EightPuzzleNode.h"
 #include "CompareBoard.h"
 #include "CompareScore.h"
+#include "EightPuzzleNode.h"
+#include "EightPuzzleNodeManager.h"
 
 int main(int argc, char *argv[])
 {

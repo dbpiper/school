@@ -7,11 +7,11 @@
 #include "EightPuzzleBoard.h"
 #include "Constants.h"
 #include "EightPuzzleNodeManager.h"
-#include "CompareBoard.h"
 
 using namespace std;
 
 class EightPuzzleNodeManager;
+class CompareBoard;
 
 class EightPuzzleNode
 {
@@ -32,6 +32,8 @@ public:
     EightPuzzleNode* parent;
  static unsigned int nextId;
  static bool comparisonFunction(
+      EightPuzzleNode* node1, EightPuzzleNode* node2);
+ static bool comparisonFunctionBoard(
       EightPuzzleNode* node1, EightPuzzleNode* node2);
     // create a node from scratch
     EightPuzzleNode(EightPuzzleNode* parent,
@@ -59,5 +61,8 @@ public:
     bool areBoardsSame(EightPuzzleNode& node);
     EightPuzzleBoard getBoard();
 };
+
+
+#include "CompareBoard.h"
 
 #endif

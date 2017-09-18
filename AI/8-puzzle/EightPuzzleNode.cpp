@@ -25,6 +25,25 @@ bool EightPuzzleNode::comparisonFunction(
     }
 }
 
+// node1 > node2
+bool EightPuzzleNode::comparisonFunctionBoard(
+    EightPuzzleNode* node1, EightPuzzleNode* node2)
+{
+    vector< vector<int> > node1Pieces = node1->getBoard().getPieces();
+    vector< vector<int> > node2Pieces = node2->getBoard().getPieces();
+    for (int i = 0; i < node1Pieces.size(); i++) {
+        for (int j = 0; j < node1Pieces.size(); j++) {
+            if (node1Pieces.at(i).at(j) < node2Pieces.at(i).at(j)) {
+                return false;
+            } else if (node1Pieces.at(i).at(j) == node2Pieces.at(i).at(j)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+}
+
 // less is better
 // compare two nodes:
 // returns  0 if equal
