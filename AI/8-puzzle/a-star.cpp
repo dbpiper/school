@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <queue>
+#include <ctime>
 
 #include "a-star.h"
 
@@ -66,8 +67,17 @@ int main(int argc, char *argv[])
             } else { // this isn't the goal
                 currentNode->printNodeDebug();
                 // get the successors who aren't on the closed list
+                //clock_t begin = clock();
+
+  
                 vector<EightPuzzleNode*> children =
                     currentNode->getSuccessors(closed);
+                //clock_t end = clock();
+                //double elapsed_secs = 
+                    //double(end - begin) / CLOCKS_PER_SEC;
+                //cout << "getting successors took: " ;
+                //cout << to_string(elapsed_secs) << " ms";
+                //cout << endl;
                 // add the children to the open list
                 for (int i = 0; i < children.size(); i++) {
                     open.push(children.at(i));
@@ -114,16 +124,16 @@ double calculateBranchingFactor(int N, int d)
     return pow((double)N, 1.0/(double)d);
 }
 
-bool isNodeInOpen(vector<EightPuzzleNode*> open,
-    EightPuzzleNode* node)
-{
-    bool inOpen = false;
-    for (auto openNode : open) {
-        if (node->areBoardsSame((*openNode)) ) {
-        // not less so greater than or equal to
-           //&& !node->compareToNode((*openNode)))  {
-            inOpen = true;
-        }
-    }
-    return inOpen;
-}
+//bool isNodeInOpen(priority_queue<EightPuzzleNode*, vector<EightPuzzleNode*>,  Compare> open,
+    //EightPuzzleNode* node)
+//{
+    //bool inOpen = false;
+    //for (auto openNode : open) {
+        //if (node->areBoardsSame((*openNode)) ) {
+        //// not less so greater than or equal to
+           ////&& !node->compareToNode((*openNode)))  {
+            //inOpen = true;
+        //}
+    //}
+    //return inOpen;
+//}
