@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
         int visited = 0;
         cout << "Searching..." << endl;
         while (!open.empty()) {
+            cout << "Open size: " << open.size() << endl;
             int nodesInMem = open.size() + closed.size();
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
