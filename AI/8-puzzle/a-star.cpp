@@ -5,12 +5,14 @@
 #include <cmath>
 #include <queue>
 #include <ctime>
+#include <set>
 
 #include "a-star.h"
 
 #include "EightPuzzleNodeManager.h"
 #include "EightPuzzleNode.h"
-#include "Compare.h"
+#include "CompareBoard.h"
+#include "CompareScore.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,11 +30,12 @@ int main(int argc, char *argv[])
 
         // a-star data structs
         // init open list with first node
-        priority_queue<EightPuzzleNode*, vector<EightPuzzleNode*>,  Compare> open;
+        priority_queue<EightPuzzleNode*, vector<EightPuzzleNode*>,
+            CompareScore> open;
         //vector<EightPuzzleNode*> open;
         open.push(startNode);
         // declare closed list 
-        vector<EightPuzzleNode*> closed;
+        set<EightPuzzleNode*, CompareBoard> closed;
         
         int visited = 0;
         cout << "Searching..." << endl;
@@ -85,7 +88,7 @@ int main(int argc, char *argv[])
                     //if (!isNodeInOpen(open, children.at(i))) {
                     //}
                 }
-                closed.push_back(currentNode);
+                closed.insert(currentNode);
                 //sort(open.begin(), open.end(), &EightPuzzleNode::comparisonFunction);
             }
         }

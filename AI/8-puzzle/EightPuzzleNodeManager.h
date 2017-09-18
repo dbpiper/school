@@ -25,7 +25,7 @@ public:
         EightPuzzleBoard board);
     // make a new node by advancing the parent by a move
     EightPuzzleNode* newNode(EightPuzzleNode* parent,
-        EightPuzzleMove move, vector<EightPuzzleNode*> closed);
+        EightPuzzleMove move);
 };
 
 #endif

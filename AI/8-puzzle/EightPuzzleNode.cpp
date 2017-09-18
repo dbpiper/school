@@ -196,26 +196,23 @@ int EightPuzzleNode::calculateHeuristicTilesOutRowCol()
     return score;
 }
 
-vector<EightPuzzleNode*> EightPuzzleNode::getSuccessors(vector<EightPuzzleNode*> closed)
+vector<EightPuzzleNode*> EightPuzzleNode::getSuccessors(set<EightPuzzleNode*,
+    CompareBoard> closed)
 {
     vector<EightPuzzleNode*> successors;
     vector<EightPuzzleMove> validMoves = board.validMoves();
     for (int i = 0; i < validMoves.size(); i++) {
         bool onClosed = false;
-        for (int j = 0; j < closed.size(); j++) {
-            EightPuzzleBoard board = parent->getBoard();
-            board.makeMove(validMoves.at(i));
-            // its in the closed list 
-            if (board.isEqualTo(closed.at(j)->getBoard())) {
-                onClosed = true;
-            }
+        EightPuzzleNode* tempNode = manager.newNode(
+            this, validMoves.at(i)
+        );
+        if (closed.find(tempNode) != closed.end()) {
+            onClosed = true;
         }
         // if its not closed go ahead and create it
         if (!onClosed) {
             successors.push_back(
-                manager.newNode(
-                    this, validMoves.at(i), closed
-                )
+                tempNode
             );
         }
     }

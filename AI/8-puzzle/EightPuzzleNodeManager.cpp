@@ -21,19 +21,8 @@ EightPuzzleNode*
 // new node by advancing the parent by a move
 EightPuzzleNode*
     EightPuzzleNodeManager::newNode(EightPuzzleNode* parent,
-    EightPuzzleMove move, vector<EightPuzzleNode*> closed)
+    EightPuzzleMove move)
 {
-    // check if on closed list
-    bool onClosed = false;
-    for (int i = 0; i < closed.size(); i++) {
-        EightPuzzleBoard board = parent->getBoard();
-        board.makeMove(move);
-        // is not in the closed list
-        if (!board.isEqualTo(closed.at(i)->getBoard())) {
-            
-        }
-    }
-
     EightPuzzleNode* newNode = new EightPuzzleNode(parent, move);
     nodes.push_back(newNode);
     return newNode;

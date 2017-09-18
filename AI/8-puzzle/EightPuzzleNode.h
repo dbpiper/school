@@ -2,9 +2,12 @@
 #ifndef EIGHT_PUZZLE_NODE_H
 #define EIGHT_PUZZLE_NODE_H
 
+#include <set>
+
 #include "EightPuzzleBoard.h"
 #include "Constants.h"
 #include "EightPuzzleNodeManager.h"
+#include "CompareBoard.h"
 
 using namespace std;
 
@@ -40,7 +43,8 @@ public:
     int calculateHeuristicScore();
     void setSteps(int steps);
     int getSteps();
-    vector<EightPuzzleNode*> getSuccessors(vector<EightPuzzleNode*> closed); 
+    vector<EightPuzzleNode*> getSuccessors(set<EightPuzzleNode*,
+        CompareBoard> closed); 
     void setId();
     // compare two nodes returns 0 if equal
     // -1 if this node is "less than" the other node
