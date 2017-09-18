@@ -3,11 +3,13 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
+#include <queue>
 
 #include "a-star.h"
 
 #include "EightPuzzleNodeManager.h"
 #include "EightPuzzleNode.h"
+#include "Compare.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,8 +27,9 @@ int main(int argc, char *argv[])
 
         // a-star data structs
         // init open list with first node
-        vector<EightPuzzleNode*> open;
-        open.push_back(startNode);
+        priority_queue<EightPuzzleNode*, vector<EightPuzzleNode*>,  Compare> open;
+        //vector<EightPuzzleNode*> open;
+        open.push(startNode);
         // declare closed list 
         vector<EightPuzzleNode*> closed;
         
@@ -37,12 +40,13 @@ int main(int argc, char *argv[])
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
             }
-            // grab the leftmost node
-            EightPuzzleNode* currentNode = open.at(0);
+            //// grab the leftmost node
+            EightPuzzleNode* currentNode = open.top();
             // we visited a new node
             visited++;
-            // remove the leftmost node from the open list
-            open.erase(open.begin());
+            //// remove the leftmost node from the open list
+            //open.erase(open.begin());
+            open.pop();
             
             if (currentNode->isGoal()) {
                 // return path
@@ -64,14 +68,15 @@ int main(int argc, char *argv[])
                 // get the successors who aren't on the closed list
                 vector<EightPuzzleNode*> children =
                     currentNode->getSuccessors(closed);
+                // add the children to the open list
                 for (int i = 0; i < children.size(); i++) {
-                    open.push_back(children.at(i));
+                    open.push(children.at(i));
                     // this was an idea to try to speed it up
                     //if (!isNodeInOpen(open, children.at(i))) {
                     //}
                 }
                 closed.push_back(currentNode);
-                sort(open.begin(), open.end(), EightPuzzleNode::comparisonFunction);
+                //sort(open.begin(), open.end(), &EightPuzzleNode::comparisonFunction);
             }
         }
     }
