@@ -173,17 +173,13 @@ void printClosedList(auto closedList)
 
 void removeClosedFromOpen(auto openList, auto closedList)
 {
-    vector<EightPuzzleNode*> nonIntersection;
     while (!openList.empty())
     {
         auto found = closedList.find(openList.top());
         if (found == closedList.end()) {
-            nonIntersection.push_back((*found));
+            openList.push((*found));
         }
         openList.pop();
-    }
-    for (auto node : nonIntersection) {
-        openList.push(node);
     }
 
 }
