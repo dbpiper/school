@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         int i = 0;
         while (!open.empty()) {
             //removeClosedFromOpen(&open, closed);
-            printIntersectionOfOpenAndClosed(open, closed);
+            //printIntersectionOfOpenAndClosed(open, closed);
             //cout << "Closed size: " << closed.size() << endl;
             //cout << "Open size: " << open.size() << endl;
             int nodesInMem = open.size() + closed.size();
