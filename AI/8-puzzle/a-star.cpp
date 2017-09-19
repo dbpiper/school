@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
             EightPuzzleNode* currentNode;
             
             // don't use items from closed list
-            //do {
-                currentNode = open.top();
+            do {
                 // grab the leftmost node
+                currentNode = open.top();
                 currentNode->printNodeDebug();
                 //for (auto node : open) {
                     //node-> printNodeDebug();
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                 visited++;
                 // remove the leftmost node from the open list
                 open.pop();
-            //} while(closed.find(currentNode) != closed.end());
+            } while(closed.find(currentNode) != closed.end());
             if (currentNode->isGoal()) {
                 // return path
                 cout << "GOAL!!" << endl;
