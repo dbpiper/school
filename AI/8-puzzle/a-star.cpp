@@ -30,7 +30,8 @@ int main(int argc, char *argv[])
 
         // a-star data structs
         // init open list with first node
-        priority_queue<EightPuzzleNode*, vector<EightPuzzleNode*>,
+        priority_queue<EightPuzzleNode*,
+            vector<EightPuzzleNode*>,
             CompareScore> open;
         //vector<EightPuzzleNode*> open;
         open.push(startNode);
@@ -40,19 +41,28 @@ int main(int argc, char *argv[])
         int visited = 0;
         cout << "Searching..." << endl;
         while (!open.empty()) {
-            cout << "Open size: " << open.size() << endl;
+            //cout << "Closed size: " << closed.size() << endl;
+            //cout << "Open size: " << open.size() << endl;
             int nodesInMem = open.size() + closed.size();
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
             }
-            //// grab the leftmost node
-            EightPuzzleNode* currentNode = open.top();
-            // we visited a new node
-            visited++;
-            //// remove the leftmost node from the open list
-            //open.erase(open.begin());
-            open.pop();
+
+            EightPuzzleNode* currentNode;
             
+            // don't use items from closed list
+            //do {
+                currentNode = open.top();
+                // grab the leftmost node
+                currentNode->printNodeDebug();
+                //for (auto node : open) {
+                    //node-> printNodeDebug();
+                //}
+                // we visited a new node
+                visited++;
+                // remove the leftmost node from the open list
+                open.pop();
+            //} while(closed.find(currentNode) != closed.end());
             if (currentNode->isGoal()) {
                 // return path
                 cout << "GOAL!!" << endl;
@@ -69,13 +79,12 @@ int main(int argc, char *argv[])
                 printStartToGoal(currentNode);
                 break;
             } else { // this isn't the goal
-                currentNode->printNodeDebug();
                 // get the successors who aren't on the closed list
+                //currentNode->printNodeDebug();
+                
                 //clock_t begin = clock();
-
-  
-                vector<EightPuzzleNode*> children =
-                    currentNode->getSuccessors(closed);
+                vector<EightPuzzleNode*> children;
+                children = currentNode->getSuccessors(closed);
                 //clock_t end = clock();
                 //double elapsed_secs = 
                     //double(end - begin) / CLOCKS_PER_SEC;
@@ -84,13 +93,45 @@ int main(int argc, char *argv[])
                 //cout << endl;
                 // add the children to the open list
                 for (int i = 0; i < children.size(); i++) {
-                    open.push(children.at(i));
-                    // this was an idea to try to speed it up
-                    //if (!isNodeInOpen(open, children.at(i))) {
-                    //}
+                    auto currentChild = children.at(i);
+                    auto it = closed.find(currentChild);
+                    if (it ==  closed.end()) {
+                        open.push(children.at(i));
+                    }
+                } 
+                auto ret = closed.insert(currentNode);
+                // found node in closed
+                if (!ret.second) {
+                    //cout << "Compare ret to node board " << endl;
+                    //cout << 
+                    
+                        //EightPuzzleBoard::compareBoards2(
+                            //(*(ret.first))->getBoard(),
+                            //currentNode->getBoard()
+                        //)
+                    //<< endl;
+                    //cout << "Compare node to ret board " << endl;
+                    //cout <<
+                   
+                        //EightPuzzleBoard::compareBoards2(
+                            //currentNode->getBoard(),
+                            //(*(ret.first))->getBoard()
+                        //)
+                     //<< endl;
+                    //cout << "Compare: ret to node " <<
+                    //to_string(
+                    //EightPuzzleNode::comparisonFunctionBoard(
+                    //(*(ret.first)), currentNode)) << endl;
+                    //cout << "Compare: node to ret " <<
+                    //to_string(
+                    //EightPuzzleNode::comparisonFunctionBoard(
+                    //currentNode, (*(ret.first)))) << endl;
+                   //cout << "Attempting to insert node: "
+                   //<< endl;
+                   //currentNode->printNodeDebug();
+                    //cout << "Found node: " << endl;
+                    //(*(ret.first))->printNodeDebug();
                 }
-                closed.insert(currentNode);
-                //sort(open.begin(), open.end(), &EightPuzzleNode::comparisonFunction);
             }
         }
     }

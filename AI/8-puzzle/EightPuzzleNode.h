@@ -35,6 +35,8 @@ public:
       EightPuzzleNode* node1, EightPuzzleNode* node2);
  static bool comparisonFunctionBoard(
       EightPuzzleNode* node1, EightPuzzleNode* node2);
+ static bool comparisonFunctionEqualBoard(
+      EightPuzzleNode* node1, EightPuzzleNode* node2);
     // create a node from scratch
     EightPuzzleNode(EightPuzzleNode* parent,
         EightPuzzleBoard board,

@@ -16,6 +16,10 @@ class EightPuzzleBoard
    vector< vector<int> > pieces;
 
 public:
+    static int compareBoards(EightPuzzleBoard b1,
+        EightPuzzleBoard b2);
+    static int compareBoards2(EightPuzzleBoard b1,
+        EightPuzzleBoard b2);
     EightPuzzleBoard(vector< vector<int> > pieces);
     EightPuzzleBoard(istream& input);
     // vector of ((int, int), (int, int))

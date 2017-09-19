@@ -4,6 +4,70 @@
 
 #include "EightPuzzleBoard.h"
 
+// returns 0 if boards are same
+// -1 if b1 < b2
+//  1 if b1 > b2
+int EightPuzzleBoard::compareBoards(EightPuzzleBoard b1,
+    EightPuzzleBoard b2)
+{
+    vector< vector<int> > b1Pieces = b1.getPieces();
+    vector< vector<int> > b2Pieces = b2.getPieces();
+    int sumLess = 0;
+    int sumGreater = 0;
+    for (int i = 0; i < b1Pieces.size(); i++) {
+        for(int j = 0; j < b1Pieces.at(i).size(); j++) {
+            if (b1Pieces.at(i).at(j) < b2Pieces.at(i).at(j)) {
+                sumLess++;
+            } else if (b1Pieces.at(i).at(j)
+                > b2Pieces.at(i).at(j)) {
+                sumGreater++;
+            }
+        }
+    }
+    if (sumLess > sumGreater) {
+        return -1; // <
+    } else if (sumGreater > sumLess) {
+        return 1; // >
+    } else if (sumLess == 0 && sumGreater == 0) {
+        return 0; // =
+    } else if (sumLess == sumGreater) {
+        //break ties by selecting first 
+        for (int i = 0; i < b1Pieces.size(); i++) {
+            for(int j = 0; j < b1Pieces.at(i).size(); j++) {
+                if (b1Pieces.at(i).at(j) < b2Pieces.at(i).at(j)) {
+                    return -1;
+                } else if (b1Pieces.at(i).at(j)
+                    > b2Pieces.at(i).at(j)) {
+                    return 1;
+                }
+            }
+        }
+    }
+
+}
+
+// returns 0 if boards are same
+// -1 if b1 < b2
+//  1 if b1 > b2
+int EightPuzzleBoard::compareBoards2(EightPuzzleBoard b1,
+    EightPuzzleBoard b2)
+{
+    vector< vector<int> > b1Pieces = b1.getPieces();
+    vector< vector<int> > b2Pieces = b2.getPieces();
+    // whichever has less first is less
+    for (int i = 0; i < b1Pieces.size(); i++) {
+        for(int j = 0; j < b1Pieces.at(i).size(); j++) {
+            if (b1Pieces.at(i).at(j) < b2Pieces.at(i).at(j)) {
+                return -1;
+            } else if (b1Pieces.at(i).at(j)
+                > b2Pieces.at(i).at(j)) {
+                return -1;
+            }
+        }
+    }
+    return 0; // =
+}
+
 EightPuzzleBoard::EightPuzzleBoard(vector< vector<int> > pieces) :
     pieces(pieces)
 {
@@ -90,10 +154,11 @@ vector< tuple<int, int> > EightPuzzleBoard::findAdjacentPieces
 {
     vector< tuple<int, int> > adjacentPieces;
 
-    // left
-    if (get<1>(adjacentTo) != 0) {
-        adjacentPieces.push_back(make_tuple(
-            get<0>(adjacentTo), get<1>(adjacentTo) - 1
+    // below
+    if (get<0>(adjacentTo) != pieces.size() - 1 ) {
+        adjacentPieces.push_back(
+            make_tuple(
+                get<0>(adjacentTo) + 1, get<1>(adjacentTo)
             )
         );
     }
@@ -106,19 +171,18 @@ vector< tuple<int, int> > EightPuzzleBoard::findAdjacentPieces
             )
         );
     }
+    // left
+    if (get<1>(adjacentTo) != 0) {
+        adjacentPieces.push_back(make_tuple(
+            get<0>(adjacentTo), get<1>(adjacentTo) - 1
+            )
+        );
+    }
     // above
     if (get<0>(adjacentTo) != 0) { 
         adjacentPieces.push_back(
             make_tuple(
                 get<0>(adjacentTo) - 1, get<1>(adjacentTo)
-            )
-        );
-    }
-    // below
-    if (get<0>(adjacentTo) != pieces.size() - 1 ) {
-        adjacentPieces.push_back(
-            make_tuple(
-                get<0>(adjacentTo) + 1, get<1>(adjacentTo)
             )
         );
     }

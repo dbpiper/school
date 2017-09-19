@@ -25,25 +25,21 @@ bool EightPuzzleNode::comparisonFunction(
     }
 }
 
-// node1 > node2
+// node1 < node2
 bool EightPuzzleNode::comparisonFunctionBoard(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 {
-    vector< vector<int> > node1Pieces =
-        node1->getBoard().getPieces();
-    vector< vector<int> > node2Pieces =
-        node2->getBoard().getPieces();
-    for (int i = 0; i < node1Pieces.size(); i++) {
-        for (int j = 0; j < node1Pieces.size(); j++) {
-            if (node1Pieces.at(i).at(j) < node2Pieces.at(i).at(j)) {
-                return false;
-            } else if (node1Pieces.at(i).at(j) == node2Pieces.at(i).at(j)) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
+    return EightPuzzleBoard::compareBoards(
+        node1->getBoard(),
+        node2->getBoard()) == -1;
+}
+
+bool EightPuzzleNode::comparisonFunctionEqualBoard(
+    EightPuzzleNode* node1, EightPuzzleNode* node2)
+{ 
+    return EightPuzzleBoard::compareBoards2(
+        node1->getBoard(),
+        node2->getBoard()) == 0;
 }
 
 // less is better
@@ -223,17 +219,12 @@ vector<EightPuzzleNode*> EightPuzzleNode::getSuccessors(set<EightPuzzleNode*,
     vector<EightPuzzleNode*> successors;
     vector<EightPuzzleMove> validMoves = board.validMoves();
     for (int i = 0; i < validMoves.size(); i++) {
-        bool onClosed = false;
         EightPuzzleNode* tempNode = manager.newNode(
             this, validMoves.at(i)
         );
-        if (closed.find(tempNode) != closed.end()) {
-            cout << "Node on closed list: " << endl;
-            tempNode->printNodeDebug();
-            onClosed = true;
-        }
-        // if its not closed go ahead and create it
-        if (!onClosed) {
+        auto found = closed.find(tempNode);
+        if (found == closed.end()) {
+            // if its not closed go ahead and create it
             successors.push_back(
                 tempNode
             );
@@ -267,7 +258,9 @@ bool EightPuzzleNode::isGoal()
           {6, 7, 8} 
         };
     EightPuzzleBoard goal{goalPieces};
-    return board.getPieces() == goal.getPieces();
+    return EightPuzzleBoard::compareBoards(
+        board,
+        goal) == 0;
 }
 
 string EightPuzzleNode::toString()
