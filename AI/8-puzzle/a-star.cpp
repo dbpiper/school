@@ -14,6 +14,11 @@
 #include "EightPuzzleNode.h"
 #include "EightPuzzleNodeManager.h"
 
+void printOpenList(auto openList);
+void printClosedList(auto closedList);
+void printIntersectionOfOpenAndClosed(auto openList, auto closedList);
+void removeClosedFromOpen(auto openList, auto closedList);
+
 int main(int argc, char *argv[])
 {
     // check to make sure we got all the args
@@ -40,7 +45,11 @@ int main(int argc, char *argv[])
         
         int visited = 0;
         cout << "Searching..." << endl;
+
+        int i = 0;
         while (!open.empty()) {
+            removeClosedFromOpen(open, closed);
+            printIntersectionOfOpenAndClosed(open, closed);
             //cout << "Closed size: " << closed.size() << endl;
             //cout << "Open size: " << open.size() << endl;
             int nodesInMem = open.size() + closed.size();
@@ -54,7 +63,7 @@ int main(int argc, char *argv[])
             do {
                 // grab the leftmost node
                 currentNode = open.top();
-                currentNode->printNodeDebug();
+                //currentNode->printNodeDebug();
                 //for (auto node : open) {
                     //node-> printNodeDebug();
                 //}
@@ -136,6 +145,65 @@ int main(int argc, char *argv[])
         }
     }
     return 0;
+}
+
+void printOpenList(auto openList)
+{
+    cout << "Open list: " << endl;
+    //auto qToUse = priority_queue<EightPuzzleNode*,
+            //vector<EightPuzzleNode*>,
+            //CompareScore> {openList};
+    auto qToUse = openList;
+    while (!qToUse.empty())
+    {
+        qToUse.top()->printNodeDebug();
+        qToUse.pop();
+    }
+    cout << endl;
+}
+
+void printClosedList(auto closedList)
+{
+    cout << "Closed list: " << endl;
+    for (auto node : closedList) {
+        node->printNodeDebug();
+    }
+    cout << endl;
+}
+
+void removeClosedFromOpen(auto openList, auto closedList)
+{
+    vector<EightPuzzleNode*> nonIntersection;
+    while (!openList.empty())
+    {
+        auto found = closedList.find(openList.top());
+        if (found == closedList.end()) {
+            nonIntersection.push_back((*found));
+        }
+        openList.pop();
+    }
+    for (auto node : nonIntersection) {
+        openList.push(node);
+    }
+
+}
+
+void printIntersectionOfOpenAndClosed(auto openList, auto closedList)
+{ 
+    vector<EightPuzzleNode*> intersection;
+    auto qToUse = openList;
+    while (!qToUse.empty())
+    {
+        auto found = closedList.find(qToUse.top());
+        if (found != closedList.end()) {
+            intersection.push_back((*found));
+        }
+        qToUse.pop();
+    }
+    cout << "intersection: " << endl;
+    for (auto node : intersection) {
+        node->printNodeDebug(); 
+    }
 }
 
 void printStartToGoal(EightPuzzleNode* endState)
