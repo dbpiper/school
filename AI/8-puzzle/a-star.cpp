@@ -17,7 +17,8 @@
 void printOpenList(auto openList);
 void printClosedList(auto closedList);
 void printIntersectionOfOpenAndClosed(auto openList, auto closedList);
-void removeClosedFromOpen(auto openList, auto closedList);
+void removeClosedFromOpen(auto* openList, auto closedList);
+void printIntersectionOfSuccAndClosed(auto succ, auto closed);
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
 
         int i = 0;
         while (!open.empty()) {
-            removeClosedFromOpen(open, closed);
+            //removeClosedFromOpen(&open, closed);
             printIntersectionOfOpenAndClosed(open, closed);
             //cout << "Closed size: " << closed.size() << endl;
             //cout << "Open size: " << open.size() << endl;
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
                 //clock_t begin = clock();
                 vector<EightPuzzleNode*> children;
                 children = currentNode->getSuccessors(closed);
+                //printIntersectionOfSuccAndClosed(children, closed);
                 //clock_t end = clock();
                 //double elapsed_secs = 
                     //double(end - begin) / CLOCKS_PER_SEC;
@@ -171,17 +173,38 @@ void printClosedList(auto closedList)
     cout << endl;
 }
 
-void removeClosedFromOpen(auto openList, auto closedList)
+void removeClosedFromOpen(auto* openList, auto closedList)
 {
-    while (!openList.empty())
+    vector<EightPuzzleNode*> nonIntersection;
+    while (!openList->empty())
     {
-        auto found = closedList.find(openList.top());
+        auto top = openList->top();
+        auto found = closedList.find(top);
+        openList->pop();
         if (found == closedList.end()) {
-            openList.push((*found));
+            nonIntersection.push_back(top);
         }
-        openList.pop();
     }
+    for (auto node : nonIntersection) {
+        openList->push(node);
+    }
+}
 
+void printIntersectionOfSuccAndClosed(auto succ, auto closed)
+{
+
+    vector<EightPuzzleNode*> intersection;
+    for (auto child : succ)
+    {
+        auto found = closed.find(child);
+        if (found != closed.end()) {
+            intersection.push_back(child);
+        }
+    }
+    cout << "intersection succ: " << endl;
+    for (auto node : intersection) {
+        node->printNodeDebug(); 
+    }
 }
 
 void printIntersectionOfOpenAndClosed(auto openList, auto closedList)
