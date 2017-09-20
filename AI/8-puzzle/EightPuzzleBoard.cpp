@@ -84,7 +84,6 @@ EightPuzzleBoard::EightPuzzleBoard(istream& input)
     int temp;
     const int numCols = 3;
     const int numRows = 3;
-    cout << "Enter a board: " << endl;
     for (int j = 0; j < numRows; j++) {
         vector<int> row;
         for (int i = 0; i < numCols; i++) {
@@ -124,11 +123,12 @@ void EightPuzzleBoard::printBoard()
 vector<EightPuzzleMove> EightPuzzleBoard::validMoves()
 {
    vector<EightPuzzleMove> validMoves;
-
+   // find blank piece
    tuple<int, int> blankPiece = this->findBlankPiece();
+   // finding adjacent pieces
    vector< tuple<int, int> > adjacentPieces = 
         this->findAdjacentPieces(blankPiece);
-   
+    
    for (int i = 0; i < adjacentPieces.size(); i++) {
         EightPuzzleMove 
             move{blankPiece, adjacentPieces.at(i)};

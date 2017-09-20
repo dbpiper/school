@@ -143,9 +143,13 @@ int EightPuzzleNode::calculateHeuristicDisplacement()
     vector< vector<int> > myPieces = board.getPieces();
     
     for (int i = 0; i < myPieces.size(); i++) {
-        for (int j = 0; j < myPieces.at(i).size(); j++) {
-            if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
-                score++;
+        for (int j = 0; j < myPieces.at(i).size(); j++) { 
+            if (goalPieces.at(i).at(j) != 0) {
+            if (myPieces.at(i).at(j) != 0) {
+                    if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
+                        score++;
+                    }
+                }
             }
         }
     }
@@ -169,11 +173,15 @@ int EightPuzzleNode::calculateHeuristicManhattan()
     for (int i = 0; i < myPieces.size(); i++) {
         for (int j = 0; j < myPieces.at(i).size(); j++) {
             int currentNumber = myPieces.at(i).at(j);
-            if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
-                tuple<int, int> goalIndices =
-                    goal.indicesOfElement(currentNumber);
-                score += (abs(get<0>(goalIndices)-i)) +
-                    (abs(get<1>(goalIndices)-j));
+            if (goalPieces.at(i).at(j) != 0) {
+                if (myPieces.at(i).at(j) != 0) {
+                    if (goalPieces.at(i).at(j) != myPieces.at(i).at(j)) {
+                        tuple<int, int> goalIndices =
+                            goal.indicesOfElement(currentNumber);
+                        score += (abs(get<0>(goalIndices)-i)) +
+                            (abs(get<1>(goalIndices)-j));
+                    }
+                }
             }
         }
     }
@@ -217,6 +225,7 @@ vector<EightPuzzleNode*> EightPuzzleNode::getSuccessors(set<EightPuzzleNode*,
     CompareBoard> closed)
 {
     vector<EightPuzzleNode*> successors;
+    // get valid moves possible from this board
     vector<EightPuzzleMove> validMoves = board.validMoves();
     for (int i = 0; i < validMoves.size(); i++) {
         EightPuzzleNode* tempNode = manager.newNode(

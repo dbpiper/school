@@ -16,9 +16,17 @@
 
 void printOpenList(auto openList);
 void printClosedList(auto closedList);
-void printIntersectionOfOpenAndClosed(auto openList, auto closedList);
+bool printIntersectionOfOpenAndClosed(auto openList, auto closedList);
 void removeClosedFromOpen(auto* openList, auto closedList);
 void printIntersectionOfSuccAndClosed(auto succ, auto closed);
+
+EightPuzzleNode* createNode(auto manager, auto pieces) {
+
+        EightPuzzleBoard board{pieces};
+        EightPuzzleNode* node = 
+            manager.newNode(NULL, board);
+        return node;
+}
 
 int main(int argc, char *argv[])
 {
@@ -28,10 +36,26 @@ int main(int argc, char *argv[])
         int heuristic = stoi(argv[1]);
         EightPuzzleNodeManager manager =
             EightPuzzleNodeManager(heuristic);
-        EightPuzzleBoard startBoard{cin};        
+        EightPuzzleBoard startBoard{cin};
+        vector< vector<int> > intersectPieces = {
+            {5, 7, 0},
+            {1, 4, 2},
+            {8, 6, 3}
+        };
+        EightPuzzleNode* intersectNode = createNode(manager, intersectPieces);
+        vector< vector<int> > fakeStart = {
+            {5, 2, 4},
+            {1, 0, 7},
+            {8, 6, 3}
+        };
+        EightPuzzleNode* fakeStartNode = createNode(manager, fakeStart);
         EightPuzzleNode* startNode = 
             manager.newNode(NULL, startBoard); 
-        
+        if (EightPuzzleNode::comparisonFunctionEqualBoard
+            (startNode, fakeStartNode)) {
+            cout << "start node and fake start are same"
+            << endl;
+        }
         int maxNodesInMem = 0;
 
         // a-star data structs
@@ -39,7 +63,6 @@ int main(int argc, char *argv[])
         priority_queue<EightPuzzleNode*,
             vector<EightPuzzleNode*>,
             CompareScore> open;
-        //vector<EightPuzzleNode*> open;
         open.push(startNode);
         // declare closed list 
         set<EightPuzzleNode*, CompareBoard> closed;
@@ -49,10 +72,13 @@ int main(int argc, char *argv[])
 
         int i = 0;
         while (!open.empty()) {
-            //removeClosedFromOpen(&open, closed);
-            //printIntersectionOfOpenAndClosed(open, closed);
-            //cout << "Closed size: " << closed.size() << endl;
-            //cout << "Open size: " << open.size() << endl;
+            removeClosedFromOpen(&open, closed);
+            bool nonEmptyIntersection = 
+                printIntersectionOfOpenAndClosed(open, closed);
+            if (nonEmptyIntersection) {
+                return 1;
+            }
+            cout << "Finished printing intersection" << endl;
             int nodesInMem = open.size() + closed.size();
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
@@ -64,10 +90,6 @@ int main(int argc, char *argv[])
             do {
                 // grab the leftmost node
                 currentNode = open.top();
-                //currentNode->printNodeDebug();
-                //for (auto node : open) {
-                    //node-> printNodeDebug();
-                //}
                 // we visited a new node
                 visited++;
                 // remove the leftmost node from the open list
@@ -90,59 +112,25 @@ int main(int argc, char *argv[])
                 break;
             } else { // this isn't the goal
                 // get the successors who aren't on the closed list
-                //currentNode->printNodeDebug();
-                
-                //clock_t begin = clock();
                 vector<EightPuzzleNode*> children;
                 children = currentNode->getSuccessors(closed);
-                //printIntersectionOfSuccAndClosed(children, closed);
-                //clock_t end = clock();
-                //double elapsed_secs = 
-                    //double(end - begin) / CLOCKS_PER_SEC;
-                //cout << "getting successors took: " ;
-                //cout << to_string(elapsed_secs) << " ms";
-                //cout << endl;
+                printIntersectionOfSuccAndClosed(children, closed);
                 // add the children to the open list
-                for (int i = 0; i < children.size(); i++) {
-                    auto currentChild = children.at(i);
-                    auto it = closed.find(currentChild);
+                for (auto child : children) {
+                    auto it = closed.find(child);
                     if (it ==  closed.end()) {
-                        open.push(children.at(i));
+                        if (
+                            EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
+                            cout << "compared equal to node" << endl;
+                            cout << "This is the " << 
+                                "intersect piece" << endl;
+                        } else {
+                            open.push(child);
+                        }
                     }
                 } 
                 auto ret = closed.insert(currentNode);
                 // found node in closed
-                if (!ret.second) {
-                    //cout << "Compare ret to node board " << endl;
-                    //cout << 
-                    
-                        //EightPuzzleBoard::compareBoards2(
-                            //(*(ret.first))->getBoard(),
-                            //currentNode->getBoard()
-                        //)
-                    //<< endl;
-                    //cout << "Compare node to ret board " << endl;
-                    //cout <<
-                   
-                        //EightPuzzleBoard::compareBoards2(
-                            //currentNode->getBoard(),
-                            //(*(ret.first))->getBoard()
-                        //)
-                     //<< endl;
-                    //cout << "Compare: ret to node " <<
-                    //to_string(
-                    //EightPuzzleNode::comparisonFunctionBoard(
-                    //(*(ret.first)), currentNode)) << endl;
-                    //cout << "Compare: node to ret " <<
-                    //to_string(
-                    //EightPuzzleNode::comparisonFunctionBoard(
-                    //currentNode, (*(ret.first)))) << endl;
-                   //cout << "Attempting to insert node: "
-                   //<< endl;
-                   //currentNode->printNodeDebug();
-                    //cout << "Found node: " << endl;
-                    //(*(ret.first))->printNodeDebug();
-                }
             }
         }
     }
@@ -207,7 +195,7 @@ void printIntersectionOfSuccAndClosed(auto succ, auto closed)
     }
 }
 
-void printIntersectionOfOpenAndClosed(auto openList, auto closedList)
+bool printIntersectionOfOpenAndClosed(auto openList, auto closedList)
 { 
     vector<EightPuzzleNode*> intersection;
     auto qToUse = openList;
@@ -223,6 +211,7 @@ void printIntersectionOfOpenAndClosed(auto openList, auto closedList)
     for (auto node : intersection) {
         node->printNodeDebug(); 
     }
+    return intersection.size() > 0;
 }
 
 void printStartToGoal(EightPuzzleNode* endState)
