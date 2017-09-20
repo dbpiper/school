@@ -1,8 +1,9 @@
 var gl, points;
 var NumPoints = 1000000;
 var currentFern = 0; // will be changed to 1 on first click and vis ver
+var currentGreen = 0; // will be changed to 1 on first selection of 'c' key
 
-function getRandomSeriesNumber2(){
+function getRandomSeriesNumber2() {
   var num=Math.random();
   if(num < 0.1) return 0;  //probability 0.
   else if(num < 0.17) return 1; // probability 0.07
@@ -10,7 +11,7 @@ function getRandomSeriesNumber2(){
   else return 3;  //probability 0.85
 }
 
-function getRandomSeriesNumber1(){
+function getRandomSeriesNumber1() {
   var num=Math.random();
   if(num < 0.1) return 0;  //probability 0.1
   else if(num < 0.18) return 1; // probability 0.08
@@ -170,11 +171,12 @@ function drawFern()
 
 function click()
 {
-	if (currentFern = 0) {
+	if (currentFern == 0) {
 		currentFern = 1;
 	} else {
 		currentFern = 0;
 	}
+	main();
 }
 
 function main() {
@@ -204,9 +206,33 @@ function main() {
 	// Register function (event handler) to be called on a mouse press
 	canvas.onmousedown = function(ev){ click() };
 	
+	
+	window.onkeydown = function( event ) {
+        var key = String.fromCharCode(event.keyCode);
+		switch( key ) {
+		case 'c':
+		case 'C':
+			if (currentGreen == 0) {
+				currentGreen = 1;
+			} else if (currentGreen == 1) {
+				currentGreen = 0;
+			}
+			main();
+            break;
+        }
+    };
+	
+	
+	
+	
 	var points = drawFern();
 	
-	gl.uniform4f(u_FragColor, 0.0, 1.0, 0.0, 1.0);
+	if (currentGreen == 0) {
+		gl.uniform4f(u_FragColor, 0.0, 1.0, 0.0, 1.0);
+	} else {
+		gl.uniform4f(u_FragColor, 0.0, 0.6, 0.4, 1.0);
+	}
+	
 	
 	
     // Load the data into the GPU
