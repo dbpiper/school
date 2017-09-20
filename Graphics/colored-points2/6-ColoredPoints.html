@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Draw points with different colors with mouse clicks</title>
+  </head>
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+// Vertex shader program
+attribute vec4 a_Position;
+void main() {
+    gl_Position = a_Position;
+    gl_PointSize = 12.0;
+}
+</script>
+
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+// Fragment shader program
+precision mediump float;
+uniform vec4 u_FragColor;
+void main() {
+    gl_FragColor = u_FragColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+
+ <body onload="main()">
+    <canvas id="webgl" width="400" height="400">
+    Please use a browser that supports "canvas"
+    </canvas>
+
+    <script src="6-ColoredPoints.js"></script>
+</body>
+</html>
