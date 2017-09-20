@@ -14,7 +14,10 @@
 #include "EightPuzzleNode.h"
 #include "EightPuzzleNodeManager.h"
 
-void printOpenList(auto openList);
+void printOpenList(
+        priority_queue<EightPuzzleNode*,
+            vector<EightPuzzleNode*>,
+            CompareScore> openList);
 void printClosedList(auto closedList);
 bool printIntersectionOfOpenAndClosed(auto openList, auto closedList);
 void removeClosedFromOpen(auto* openList, auto closedList);
@@ -86,6 +89,7 @@ int main(int argc, char *argv[])
                 auto intersect = closed.find(intersectNode);
                 if (intersect != closed.end()) {
                     cout << "find worked" << endl;
+                    cout << "intersect in the closed" << endl;
                 }
                 return 1;
             }
@@ -97,25 +101,22 @@ int main(int argc, char *argv[])
 
             EightPuzzleNode* currentNode;
             
-            // don't use items from closed list
-            do {
-                // grab the leftmost node
-                currentNode = open.top();
-                // we visited a new node
-                visited++;
-                // remove the leftmost node from the open list
-                open.pop();
-            } while(closed.find(currentNode) != closed.end());
+            // grab the leftmost node
+            currentNode = open.top();
+            // we visited a new node
+            visited++;
+            // remove the leftmost node from the open list
+            open.pop();
 
             if (
                 EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode,currentNode)) {
-                cout << "Current node: " << endl;
-                currentNode->printNodeDebug();
-                
-                cout << "Intersect node: " << endl;
-                intersectNode->printNodeDebug();
 
                cout << "the current node is intersect node" << endl; 
+               cout << "popping off next node" << endl;
+               EightPuzzleNode* next = open.top();
+               open.pop();
+               cout << "Next node: " << endl;
+               next->printNodeDebug();
             }
 
             if (
@@ -153,8 +154,6 @@ int main(int argc, char *argv[])
                 auto ret = closed.insert(currentNode);
                 // add the children to the open list
                 for (auto child : children) {
-                    auto it = closed.find(child);
-                    if (it ==  closed.end()) {
                         open.push(child);
                         if (
                             EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
@@ -164,17 +163,17 @@ int main(int argc, char *argv[])
                                 "intersect piece" << endl;
                             cout << endl;
                         }
-                        
-                    }
                 } 
-                // found node in closed
             }
         }
     }
     return 0;
 }
 
-void printOpenList(auto openList)
+void printOpenList(
+        priority_queue<EightPuzzleNode*,
+            vector<EightPuzzleNode*>,
+            CompareScore> openList)
 {
     cout << "Open list: " << endl;
     //auto qToUse = priority_queue<EightPuzzleNode*,
@@ -234,18 +233,23 @@ void printIntersectionOfSuccAndClosed(auto succ, auto closed)
 
 bool printIntersectionOfOpenAndClosed(auto openList, auto closedList)
 { 
+    int i = 0;
     vector<EightPuzzleNode*> intersection;
-    auto qToUse = openList;
-    while (!qToUse.empty())
+    while (!openList.empty()) 
     {
-        auto found = closedList.find(qToUse.top());
+        auto found = closedList.find(openList.top());
         if (found != closedList.end()) {
             intersection.push_back((*found));
         }
-        qToUse.pop();
+        openList.pop();
+        i++;
     }
     cout << "intersection: " << endl;
-    for (auto node : intersection) {
+    for (EightPuzzleNode* node : intersection) {
+        cout << 
+            "Index of intersection in open list: " 
+            << i;
+        cout << endl;
         node->printNodeDebug(); 
     }
     return intersection.size() > 0;
