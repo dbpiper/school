@@ -20,11 +20,13 @@ bool printIntersectionOfOpenAndClosed(auto openList, auto closedList);
 void removeClosedFromOpen(auto* openList, auto closedList);
 void printIntersectionOfSuccAndClosed(auto succ, auto closed);
 
-EightPuzzleNode* createNode(auto manager, auto pieces) {
+
+EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
+    vector< vector<int> > pieces) {
 
         EightPuzzleBoard board{pieces};
         EightPuzzleNode* node = 
-            manager.newNode(NULL, board);
+            manager->newNode(NULL, board);
         return node;
 }
 
@@ -42,13 +44,18 @@ int main(int argc, char *argv[])
             {1, 4, 2},
             {8, 6, 3}
         };
-        EightPuzzleNode* intersectNode = createNode(manager, intersectPieces);
-        vector< vector<int> > fakeStart = {
+        EightPuzzleNode* intersectNode = createNode(&manager,
+            intersectPieces);
+        cout << "Intersect node: " << endl;
+        intersectNode->printNodeDebug();
+
+        vector< vector<int> > fakeStartPieces = {
             {5, 2, 4},
             {1, 0, 7},
             {8, 6, 3}
         };
-        EightPuzzleNode* fakeStartNode = createNode(manager, fakeStart);
+        EightPuzzleNode* fakeStartNode = createNode(&manager, 
+            fakeStartPieces);
         EightPuzzleNode* startNode = 
             manager.newNode(NULL, startBoard); 
         if (EightPuzzleNode::comparisonFunctionEqualBoard
@@ -72,10 +79,14 @@ int main(int argc, char *argv[])
 
         int i = 0;
         while (!open.empty()) {
-            removeClosedFromOpen(&open, closed);
+            //removeClosedFromOpen(&open, closed);
             bool nonEmptyIntersection = 
                 printIntersectionOfOpenAndClosed(open, closed);
             if (nonEmptyIntersection) {
+                auto intersect = closed.find(intersectNode);
+                if (intersect != closed.end()) {
+                    cout << "find worked" << endl;
+                }
                 return 1;
             }
             cout << "Finished printing intersection" << endl;
@@ -95,6 +106,29 @@ int main(int argc, char *argv[])
                 // remove the leftmost node from the open list
                 open.pop();
             } while(closed.find(currentNode) != closed.end());
+
+            if (
+                EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode,currentNode)) {
+                cout << "Current node: " << endl;
+                currentNode->printNodeDebug();
+                
+                cout << "Intersect node: " << endl;
+                intersectNode->printNodeDebug();
+
+               cout << "the current node is intersect node" << endl; 
+            }
+
+            if (
+                EightPuzzleNode::comparisonFunctionEqualBoard(startNode,currentNode)) {
+
+                cout << "Current node: " << endl;
+                currentNode->printNodeDebug();
+                
+                cout << "Start node: " << endl;
+                startNode->printNodeDebug();
+
+               cout << "the current node is start node" << endl; 
+            }
             if (currentNode->isGoal()) {
                 // return path
                 cout << "GOAL!!" << endl;
@@ -115,21 +149,24 @@ int main(int argc, char *argv[])
                 vector<EightPuzzleNode*> children;
                 children = currentNode->getSuccessors(closed);
                 printIntersectionOfSuccAndClosed(children, closed);
+                // insert currentNode to closed
+                auto ret = closed.insert(currentNode);
                 // add the children to the open list
                 for (auto child : children) {
                     auto it = closed.find(child);
                     if (it ==  closed.end()) {
+                        open.push(child);
                         if (
                             EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
+                            cout << endl;
                             cout << "compared equal to node" << endl;
                             cout << "This is the " << 
                                 "intersect piece" << endl;
-                        } else {
-                            open.push(child);
+                            cout << endl;
                         }
+                        
                     }
                 } 
-                auto ret = closed.insert(currentNode);
                 // found node in closed
             }
         }

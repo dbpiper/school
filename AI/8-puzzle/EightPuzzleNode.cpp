@@ -37,7 +37,7 @@ bool EightPuzzleNode::comparisonFunctionBoard(
 bool EightPuzzleNode::comparisonFunctionEqualBoard(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 { 
-    return EightPuzzleBoard::compareBoards2(
+    return EightPuzzleBoard::compareBoards(
         node1->getBoard(),
         node2->getBoard()) == 0;
 }
