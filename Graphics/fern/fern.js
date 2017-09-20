@@ -19,7 +19,7 @@ function getRandomSeriesNumber1() {
   else return 3;  //probability 0.74
 }
 
-
+//series select for fern 1
 function selectSeriesFern1()
 {
 	var series1 = [
@@ -63,6 +63,7 @@ function selectSeriesFern1()
 	
 }
 
+// series select for fern 2
 function selectSeriesFern2()
 {
 	var series1 = [
@@ -106,6 +107,7 @@ function selectSeriesFern2()
 	
 }
 
+// generate next point given old point
 function generatePoint(previousPoint)
 {
 	var series;
@@ -121,6 +123,7 @@ function generatePoint(previousPoint)
 	return [x, y];
 }
 
+// scale values to between -1.0 to 1.0 for drawing on webgl
 function scalePointToRange(point, largestX, largestY, smallestX, smallestY)
 {
 	var x = (point[0] - smallestX)/(largestX - smallestX) *  2 - 1;
@@ -128,6 +131,7 @@ function scalePointToRange(point, largestX, largestY, smallestX, smallestY)
 	return [x, y];
 }
 
+// generates the points for the selected fern
 function drawFern()
 {
 	var p = [Math.random(), Math.random()];
