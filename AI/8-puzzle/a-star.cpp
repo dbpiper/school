@@ -37,10 +37,10 @@ void insertSuccessors(auto *open, auto *closed,
     EightPuzzleNode* currentNode)
 {
     vector<EightPuzzleNode*> children;
+    auto ret = closed->insert(currentNode);
     children = currentNode->getSuccessors(*closed);
     //printIntersectionOfSuccAndClosed(children, closed);
     // insert currentNode to closed
-    auto ret = closed->insert(currentNode);
     // add the children to the open list
     for (auto child : children) {
             open->insert(child);
@@ -94,18 +94,18 @@ void doAStar(auto open, auto closed, auto intersectNode)
         int maxNodesInMem = 0;
         while (!open.empty()) {
             //removeClosedFromOpen(&open, closed);
-            //bool nonEmptyIntersection = 
-                //printIntersectionOfOpenAndClosed(open, closed);
-            //if (nonEmptyIntersection) {
-                //cout << "NonEmpty intersection" << endl;
-                ////auto intersect = closed.find(intersectNode);
-                ////if (intersect != closed.end()) {
-                    ////cout << "find worked" << endl;
-                    ////cout << "intersect in the closed" << endl;
-                ////}
-                ////return;
-            //}
-            //cout << "Finished printing intersection" << endl;
+            bool nonEmptyIntersection = 
+                printIntersectionOfOpenAndClosed(open, closed);
+            if (nonEmptyIntersection) {
+                cout << "NonEmpty intersection" << endl;
+                //auto intersect = closed.find(intersectNode);
+                //if (intersect != closed.end()) {
+                    //cout << "find worked" << endl;
+                    //cout << "intersect in the closed" << endl;
+                //}
+                return;
+            }
+            cout << "Finished printing intersection" << endl;
             int nodesInMem = open.size() + closed.size();
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
@@ -139,8 +139,33 @@ void doAStar(auto open, auto closed, auto intersectNode)
                 break;
             } else { // this isn't the goal
                 // get the successors who aren't on the closed list
+             bool nonEmptyIntersection = 
+                printIntersectionOfOpenAndClosed(open, closed);
+            if (nonEmptyIntersection) {
+                cout << "NonEmpty before" << endl;
+                //auto intersect = closed.find(intersectNode);
+                //if (intersect != closed.end()) {
+                    //cout << "find worked" << endl;
+                    //cout << "intersect in the closed" << endl;
+                //}
+                return;
+            }
                 insertSuccessors(&open, &closed,
                     currentNode); 
+
+            nonEmptyIntersection = 
+                printIntersectionOfOpenAndClosed(open, closed);
+            if (nonEmptyIntersection) {
+                cout << "NonEmpty after" << endl;
+                currentNode->printNodeDebug();
+                //auto intersect = closed.find(intersectNode);
+                //if (intersect != closed.end()) {
+                    //cout << "find worked" << endl;
+                    //cout << "intersect in the closed" << endl;
+                //}
+                return;
+            }
+ 
             }
         }
 }
