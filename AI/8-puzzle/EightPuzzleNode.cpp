@@ -29,7 +29,7 @@ bool EightPuzzleNode::comparisonFunction(
 bool EightPuzzleNode::comparisonFunctionBoard(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 {
-    return EightPuzzleBoard::compareBoards(
+    return EightPuzzleBoard::compareBoards2(
         node1->getBoard(),
         node2->getBoard()) == -1;
 }
@@ -37,7 +37,7 @@ bool EightPuzzleNode::comparisonFunctionBoard(
 bool EightPuzzleNode::comparisonFunctionEqualBoard(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 { 
-    return EightPuzzleBoard::compareBoards(
+    return EightPuzzleBoard::compareBoards2(
         node1->getBoard(),
         node2->getBoard()) == 0;
 }

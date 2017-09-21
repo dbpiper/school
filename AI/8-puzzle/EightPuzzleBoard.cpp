@@ -61,7 +61,7 @@ int EightPuzzleBoard::compareBoards2(EightPuzzleBoard b1,
                 return -1;
             } else if (b1Pieces.at(i).at(j)
                 > b2Pieces.at(i).at(j)) {
-                return -1;
+                return 1;
             }
         }
     }
