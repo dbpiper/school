@@ -33,6 +33,61 @@ EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
         return node;
 }
 
+void insertSuccessors(auto *open, auto *closed,
+    EightPuzzleNode* currentNode)
+{
+    vector<EightPuzzleNode*> children;
+    children = currentNode->getSuccessors(*closed);
+    //printIntersectionOfSuccAndClosed(children, closed);
+    // insert currentNode to closed
+    auto ret = closed->insert(currentNode);
+    // add the children to the open list
+    for (auto child : children) {
+            open->insert(child);
+            //if (
+                //EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
+                //cout << endl;
+                //cout << "compared equal to node" << endl;
+                //cout << "This is the " << 
+                    //"intersect piece" << endl;
+                //cout << endl;
+            //}
+    } 
+}
+
+void doGoal(int maxNodesInMem, int visited,
+    EightPuzzleNode* currentNode)
+{
+    // return path
+    cout << "GOAL!!" << endl;
+    int N = maxNodesInMem;
+    int V = visited;
+    int d = countDepthOfOptimal(currentNode);
+    double b = calculateBranchingFactor(N, d);      
+
+    cout << "V=" << V << endl;
+    cout << "N=" << N << endl;
+    cout << "d=" << d << endl;
+    cout << "b=" << b << endl;
+
+    printStartToGoal(currentNode);
+}
+
+
+EightPuzzleNode* getNextNode(auto *open, int &visited)
+{
+    EightPuzzleNode* nextNode;
+    // grab the leftmost node
+    auto first = open->begin();
+    if (first != open->end()) {
+        nextNode = (*first);
+        // remove the leftmost node from the open list
+        open->erase(first);
+        visited++;
+    }
+    return nextNode;
+}
+
 void doAStar(auto open, auto closed, auto intersectNode)
 {
         int visited = 0;
@@ -56,16 +111,8 @@ void doAStar(auto open, auto closed, auto intersectNode)
                 maxNodesInMem = nodesInMem;
             }
 
-            EightPuzzleNode* currentNode;
-            
-            // grab the leftmost node
-            auto first = open.begin();
-            if (first != open.end()) {
-                currentNode = (*first);
-                // remove the leftmost node from the open list
-                open.erase(first);
-                visited++;
-            }
+            EightPuzzleNode* currentNode = 
+                getNextNode(&open, visited);
             
             //currentNode->printNodeDebug();
 
@@ -87,39 +134,13 @@ void doAStar(auto open, auto closed, auto intersectNode)
                //cout << "the current node is start node" << endl; 
             //}
             if (currentNode->isGoal()) {
-                // return path
-                cout << "GOAL!!" << endl;
-                int N = maxNodesInMem;
-                int V = visited;
-                int d = countDepthOfOptimal(currentNode);
-                double b = calculateBranchingFactor(N, d);      
-
-                cout << "V=" << V << endl;
-                cout << "N=" << N << endl;
-                cout << "d=" << d << endl;
-                cout << "b=" << b << endl;
-
-                printStartToGoal(currentNode);
+                doGoal(maxNodesInMem, visited,
+                    currentNode);
                 break;
             } else { // this isn't the goal
                 // get the successors who aren't on the closed list
-                vector<EightPuzzleNode*> children;
-                children = currentNode->getSuccessors(closed);
-                //printIntersectionOfSuccAndClosed(children, closed);
-                // insert currentNode to closed
-                auto ret = closed.insert(currentNode);
-                // add the children to the open list
-                for (auto child : children) {
-                        open.insert(child);
-                        //if (
-                            //EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
-                            //cout << endl;
-                            //cout << "compared equal to node" << endl;
-                            //cout << "This is the " << 
-                                //"intersect piece" << endl;
-                            //cout << endl;
-                        //}
-                } 
+                insertSuccessors(&open, &closed,
+                    currentNode); 
             }
         }
 }
