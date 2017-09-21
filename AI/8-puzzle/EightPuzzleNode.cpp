@@ -70,9 +70,7 @@ bool EightPuzzleNode::comparisonFunctionEqualBoard(
 // returns  1 if this node is "greater than" the other node
 int EightPuzzleNode::compareToNode(EightPuzzleNode& node)
 {
-    if (score == node.getScore()) {
-        return 0;
-    } else if (score < node.getScore()) {
+    if (score < node.getScore()) {
         return -1;
     } else if (score > node.getScore()) {
         return 1;

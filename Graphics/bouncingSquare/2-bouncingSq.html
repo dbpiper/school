@@ -1,0 +1,82 @@
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+
+uniform vec3 sc;
+uniform vec3 tr;
+uniform vec3 theta;
+
+void main() 
+{
+    // Compute the sines and cosines of theta for each of
+    //   the three axes in one computation.
+    vec3 angles = radians( theta );
+    vec3 c = cos( angles );
+    vec3 s = sin( angles );
+
+    // Remember: these matrices are in column-major order
+    mat4 rx = mat4( 1.0,  0.0,  0.0, 0.0,
+		    0.0,  c.x,  s.x, 0.0,
+		    0.0, -s.x,  c.x, 0.0,
+		    0.0,  0.0,  0.0, 1.0 );
+
+    mat4 ry = mat4( c.y, 0.0, -s.y, 0.0,
+		    0.0, 1.0,  0.0, 0.0,
+		    s.y, 0.0,  c.y, 0.0,
+		    0.0, 0.0,  0.0, 1.0 );
+
+    mat4 rz = mat4( c.z, s.z, 0.0, 0.0,
+		    -s.z,  c.z, 0.0, 0.0,
+		    0.0,  0.0, 1.0, 0.0,
+		    0.0,  0.0, 0.0, 1.0 );
+
+    mat4 translation
+            = mat4( 1.0,  0.0, 0.0, 0,
+                    0.0,  1.0, 0.0, 0,
+                    0.0,  0.0, 1.0, 0,
+                    tr.x, tr.y, tr.z, 1.0);
+
+    mat4 scale
+            = mat4(sc.x,  0.0, 0.0, 0.0,
+                    0.0, sc.y, 0.0, 0.0,
+                    0.0,  0.0,sc.z, 0.0,
+                    0.0,  0.0, 0.0, 1.0);
+
+   gl_Position = translation * rz * ry * rx  * scale * vPosition;
+} 
+
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+   
+void
+main()
+{
+   gl_FragColor = vec4 (0, 0, 1, 1);
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="2-bouncingSq.js"></script>
+
+<body>
+<canvas id="gl-canvas" width="512"" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+   
+<br/>
+
+<div>
+<button id= "OneButton">One</button>
+<button id= "TwoButton">Two</button>
+<button id= "ThreeButton">Three</button>
+</div>
+
+</body>
+</html>

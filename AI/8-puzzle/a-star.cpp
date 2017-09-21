@@ -21,6 +21,7 @@ void printIntersectionOfSuccAndClosed(auto succ, auto closed);
 
 bool checkIntersection = false;
 bool exitOnNonEmptyIntersect = false;
+bool printNodes = true;
 
 EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
     vector< vector<int> > pieces) {
@@ -41,12 +42,7 @@ void insertSuccessors(auto *open, auto *closed,
     // insert currentNode to closed
     // add the children to the open list
     for (auto child : children) {
-            if (
-                EightPuzzleNode::comparisonFunctionEqualBoard(child,currentNode)) {
-
-            cout << "Bad successor" << endl;
-        }
-        open->insert(child);
+        open->insert(child); 
         //if (
             //EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
             //cout << endl;
@@ -56,13 +52,11 @@ void insertSuccessors(auto *open, auto *closed,
             //cout << endl;
         //}
     } 
-}
-
+} 
 void doGoal(int maxNodesInMem, int visited,
     EightPuzzleNode* currentNode)
 {
     // return path
-    cout << "GOAL!!" << endl;
     int N = maxNodesInMem;
     int V = visited;
     int d = countDepthOfOptimal(currentNode);
@@ -91,7 +85,7 @@ EightPuzzleNode* getNextNode(auto *open, int &visited)
     return nextNode;
 }
 
-void doAStar(auto *open, auto *closed, auto intersectNode)
+void doAStar(auto *open, auto *closed)
 {
         int visited = 0;
         int maxNodesInMem = 0;
@@ -131,7 +125,11 @@ void doAStar(auto *open, auto *closed, auto intersectNode)
             EightPuzzleNode* currentNode = 
                 getNextNode(open, visited);
             closed->insert(currentNode);            
-    
+           
+            if (printNodes) {
+                currentNode->printNodeDebug();
+            }
+
             if (checkIntersection) {
                 bool nonEmptyIntersection = 
                     printIntersectionOfOpenAndClosed(
@@ -151,26 +149,6 @@ void doAStar(auto *open, auto *closed, auto intersectNode)
                 }
             }
             
-
-            //currentNode->printNodeDebug();
-
-            if (
-                EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode,currentNode)) {
-
-               cout << "the current node is intersect node" << endl; 
-            }
-
-            //if (
-                //EightPuzzleNode::comparisonFunctionEqualBoard(startNode,currentNode)) {
-
-                //cout << "Current node: " << endl;
-                //currentNode->printNodeDebug();
-                
-                //cout << "Start node: " << endl;
-                //startNode->printNodeDebug();
-
-               //cout << "the current node is start node" << endl; 
-            //}
             if (currentNode->isGoal()) {
                 doGoal(maxNodesInMem, visited,
                     currentNode);
@@ -206,10 +184,6 @@ void doAStar(auto *open, auto *closed, auto intersectNode)
  
             }
         }
-
-        if (open->empty()) {
-            cout << "Open empty" << endl;
-        }
 }
 
 int main(int argc, char *argv[])
@@ -221,30 +195,9 @@ int main(int argc, char *argv[])
         EightPuzzleNodeManager manager =
             EightPuzzleNodeManager(heuristic);
         EightPuzzleBoard startBoard{cin};
-        vector< vector<int> > intersectPieces = {
-            {5, 7, 0},
-            {1, 4, 2},
-            {8, 6, 3}
-        };
-        EightPuzzleNode* intersectNode = createNode(&manager,
-            intersectPieces);
-        cout << "Intersect node: " << endl;
-        intersectNode->printNodeDebug();
-
-        vector< vector<int> > fakeStartPieces = {
-            {5, 2, 4},
-            {1, 0, 7},
-            {8, 6, 3}
-        };
-        EightPuzzleNode* fakeStartNode = createNode(&manager, 
-            fakeStartPieces);
+        
         EightPuzzleNode* startNode = 
             manager.newNode(NULL, startBoard); 
-        if (EightPuzzleNode::comparisonFunctionEqualBoard
-            (startNode, fakeStartNode)) {
-            cout << "start node and fake start are same"
-            << endl;
-        }
 
         // a-star data structs
         // init open list with first node
@@ -253,10 +206,8 @@ int main(int argc, char *argv[])
         open.insert(startNode);
         // declare closed list 
         set<EightPuzzleNode*, CompareBoard> closed;
-        
-        cout << "Searching..." << endl;
-        
-        doAStar(&open, &closed, intersectNode);
+         
+        doAStar(&open, &closed);
     
         int i = 0;
     }
