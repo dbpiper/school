@@ -42,7 +42,7 @@ window.onload = function init()
         version = 2;
         rotate=[0, 0, 0];
         scale=[1, 1, 1];
-        translate=[1, 0, 0];
+        translate=[-1, 0, 0];
         render();
     });
 
@@ -102,14 +102,15 @@ function render() {
         var windowHeight = 1;
 
         var x=translate[0];
-        var y=translate[1];
 
 	    // Actually move the square
         x += xstep;
-        y += ystep;
+        
+        // Reverse direction when it reaches left or right edge
+        if(x > windowWidth-rsize || x < -windowWidth)
+            xstep = -xstep;
 	
         translate[0] = x;
-        translate[1] = y;
         gl.uniform3fv(gl.getUniformLocation(program, "tr"), translate);
         
         gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );   
