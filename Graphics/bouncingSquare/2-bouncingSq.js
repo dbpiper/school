@@ -107,9 +107,9 @@ function render() {
         x += xstep;
         
         // Reverse direction when it reaches left or right edge
-        if(x > windowWidth-rsize || x < -windowWidth)
-            xstep = -xstep;
-	
+        if(x > windowWidth)
+            x = -1;
+
         translate[0] = x;
         gl.uniform3fv(gl.getUniformLocation(program, "tr"), translate);
         
