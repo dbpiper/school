@@ -33,6 +33,97 @@ EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
         return node;
 }
 
+void doAStar(auto open, auto closed, auto intersectNode)
+{
+        int visited = 0;
+        int maxNodesInMem = 0;
+        while (!open.empty()) {
+            //removeClosedFromOpen(&open, closed);
+            //bool nonEmptyIntersection = 
+                //printIntersectionOfOpenAndClosed(open, closed);
+            //if (nonEmptyIntersection) {
+                //cout << "NonEmpty intersection" << endl;
+                ////auto intersect = closed.find(intersectNode);
+                ////if (intersect != closed.end()) {
+                    ////cout << "find worked" << endl;
+                    ////cout << "intersect in the closed" << endl;
+                ////}
+                ////return;
+            //}
+            //cout << "Finished printing intersection" << endl;
+            int nodesInMem = open.size() + closed.size();
+            if (nodesInMem > maxNodesInMem) {
+                maxNodesInMem = nodesInMem;
+            }
+
+            EightPuzzleNode* currentNode;
+            
+            // grab the leftmost node
+            auto first = open.begin();
+            if (first != open.end()) {
+                currentNode = (*first);
+                // remove the leftmost node from the open list
+                open.erase(first);
+                visited++;
+            }
+            
+            //currentNode->printNodeDebug();
+
+            if (
+                EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode,currentNode)) {
+
+               cout << "the current node is intersect node" << endl; 
+            }
+
+            //if (
+                //EightPuzzleNode::comparisonFunctionEqualBoard(startNode,currentNode)) {
+
+                //cout << "Current node: " << endl;
+                //currentNode->printNodeDebug();
+                
+                //cout << "Start node: " << endl;
+                //startNode->printNodeDebug();
+
+               //cout << "the current node is start node" << endl; 
+            //}
+            if (currentNode->isGoal()) {
+                // return path
+                cout << "GOAL!!" << endl;
+                int N = maxNodesInMem;
+                int V = visited;
+                int d = countDepthOfOptimal(currentNode);
+                double b = calculateBranchingFactor(N, d);      
+
+                cout << "V=" << V << endl;
+                cout << "N=" << N << endl;
+                cout << "d=" << d << endl;
+                cout << "b=" << b << endl;
+
+                printStartToGoal(currentNode);
+                break;
+            } else { // this isn't the goal
+                // get the successors who aren't on the closed list
+                vector<EightPuzzleNode*> children;
+                children = currentNode->getSuccessors(closed);
+                //printIntersectionOfSuccAndClosed(children, closed);
+                // insert currentNode to closed
+                auto ret = closed.insert(currentNode);
+                // add the children to the open list
+                for (auto child : children) {
+                        open.insert(child);
+                        //if (
+                            //EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
+                            //cout << endl;
+                            //cout << "compared equal to node" << endl;
+                            //cout << "This is the " << 
+                                //"intersect piece" << endl;
+                            //cout << endl;
+                        //}
+                } 
+            }
+        }
+}
+
 int main(int argc, char *argv[])
 {
     // check to make sure we got all the args
@@ -66,106 +157,20 @@ int main(int argc, char *argv[])
             cout << "start node and fake start are same"
             << endl;
         }
-        int maxNodesInMem = 0;
 
         // a-star data structs
         // init open list with first node
-        priority_queue<EightPuzzleNode*,
-            vector<EightPuzzleNode*>,
+        set<EightPuzzleNode*,
             CompareScore> open;
-        open.push(startNode);
+        open.insert(startNode);
         // declare closed list 
         set<EightPuzzleNode*, CompareBoard> closed;
         
-        int visited = 0;
         cout << "Searching..." << endl;
-
+        
+        doAStar(open, closed, intersectNode);
+    
         int i = 0;
-        while (!open.empty()) {
-            //removeClosedFromOpen(&open, closed);
-            bool nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(open, closed);
-            if (nonEmptyIntersection) {
-                auto intersect = closed.find(intersectNode);
-                if (intersect != closed.end()) {
-                    cout << "find worked" << endl;
-                    cout << "intersect in the closed" << endl;
-                }
-                return 1;
-            }
-            cout << "Finished printing intersection" << endl;
-            int nodesInMem = open.size() + closed.size();
-            if (nodesInMem > maxNodesInMem) {
-                maxNodesInMem = nodesInMem;
-            }
-
-            EightPuzzleNode* currentNode;
-            
-            // grab the leftmost node
-            currentNode = open.top();
-            // we visited a new node
-            visited++;
-            // remove the leftmost node from the open list
-            open.pop();
-
-            if (
-                EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode,currentNode)) {
-
-               cout << "the current node is intersect node" << endl; 
-               cout << "popping off next node" << endl;
-               EightPuzzleNode* next = open.top();
-               open.pop();
-               cout << "Next node: " << endl;
-               next->printNodeDebug();
-            }
-
-            if (
-                EightPuzzleNode::comparisonFunctionEqualBoard(startNode,currentNode)) {
-
-                cout << "Current node: " << endl;
-                currentNode->printNodeDebug();
-                
-                cout << "Start node: " << endl;
-                startNode->printNodeDebug();
-
-               cout << "the current node is start node" << endl; 
-            }
-            if (currentNode->isGoal()) {
-                // return path
-                cout << "GOAL!!" << endl;
-                int N = maxNodesInMem;
-                int V = visited;
-                int d = countDepthOfOptimal(currentNode);
-                double b = calculateBranchingFactor(N, d);      
-
-                cout << "V=" << V << endl;
-                cout << "N=" << N << endl;
-                cout << "d=" << d << endl;
-                cout << "b=" << b << endl;
-
-                printStartToGoal(currentNode);
-                break;
-            } else { // this isn't the goal
-                // get the successors who aren't on the closed list
-                vector<EightPuzzleNode*> children;
-                children = currentNode->getSuccessors(closed);
-                printIntersectionOfSuccAndClosed(children, closed);
-                // insert currentNode to closed
-                auto ret = closed.insert(currentNode);
-                // add the children to the open list
-                for (auto child : children) {
-                        open.push(child);
-                        if (
-                            EightPuzzleNode::comparisonFunctionEqualBoard(intersectNode, child)) {
-                            cout << endl;
-                            cout << "compared equal to node" << endl;
-                            cout << "This is the " << 
-                                "intersect piece" << endl;
-                            cout << endl;
-                        }
-                } 
-            }
-        }
     }
     return 0;
 }
@@ -235,13 +240,12 @@ bool printIntersectionOfOpenAndClosed(auto openList, auto closedList)
 { 
     int i = 0;
     vector<EightPuzzleNode*> intersection;
-    while (!openList.empty()) 
-    {
-        auto found = closedList.find(openList.top());
+
+    for (auto node : openList) {
+        auto found = closedList.find(node);
         if (found != closedList.end()) {
             intersection.push_back((*found));
         }
-        openList.pop();
         i++;
     }
     cout << "intersection: " << endl;

@@ -7,8 +7,8 @@ using namespace std;
 unsigned int EightPuzzleNode::nextId = 0;
 
 // returns whether or not node1 > node2
-// false means 0 or -1
-// true means 1
+// false means 0 or 1
+// true means -1
 bool EightPuzzleNode::comparisonFunction(
     EightPuzzleNode* node1, EightPuzzleNode* node2)
 {
@@ -18,10 +18,10 @@ bool EightPuzzleNode::comparisonFunction(
     if (comparison == 0) {
         return false;
     } else if (comparison == 1) {
-        return true;
+        return false;
         // is less than
     } else {
-        return false;
+        return true;
     }
 }
 
