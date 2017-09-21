@@ -14,15 +14,13 @@
 #include "EightPuzzleNode.h"
 #include "EightPuzzleNodeManager.h"
 
-void printOpenList(
-        priority_queue<EightPuzzleNode*,
-            vector<EightPuzzleNode*>,
-            CompareScore> openList);
 void printClosedList(auto closedList);
 bool printIntersectionOfOpenAndClosed(auto openList, auto closedList);
 void removeClosedFromOpen(auto* openList, auto closedList);
 void printIntersectionOfSuccAndClosed(auto succ, auto closed);
 
+bool checkIntersection = false;
+bool exitOnNonEmptyIntersect = false;
 
 EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
     vector< vector<int> > pieces) {
@@ -99,49 +97,59 @@ void doAStar(auto *open, auto *closed, auto intersectNode)
         int maxNodesInMem = 0;
         while (!open->empty()) {
             //removeClosedFromOpen(&open, closed);
-            bool nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(*open, *closed);
-            if (nonEmptyIntersection) {
-                cout << "NonEmpty intersection" << endl;
-                //auto intersect = closed.find(intersectNode);
-                //if (intersect != closed.end()) {
-                    //cout << "find worked" << endl;
-                    //cout << "intersect in the closed" << endl;
-                //}
-                return;
+            if (checkIntersection) {
+                bool nonEmptyIntersection = 
+                    printIntersectionOfOpenAndClosed(*open, *closed);
+                if (nonEmptyIntersection) {
+                    cout << "NonEmpty intersection" << endl;
+                    //auto intersect = closed.find(intersectNode);
+                    //if (intersect != closed.end()) {
+                        //cout << "find worked" << endl;
+                        //cout << "intersect in the closed" << endl;
+                    //}
+                if (exitOnNonEmptyIntersect) {
+                    return;
+                }
+                }
             }
             int nodesInMem = open->size() + closed->size();
             if (nodesInMem > maxNodesInMem) {
                 maxNodesInMem = nodesInMem;
             }
 
-             nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(
-                    *open, *closed);
-            if (nonEmptyIntersection) {
-                cout << "NonEmpty before 1" << endl;
-                return;
+            if (checkIntersection) {
+                 bool nonEmptyIntersection = 
+                    printIntersectionOfOpenAndClosed(
+                        *open, *closed);
+                if (nonEmptyIntersection) {
+                    cout << "NonEmpty before 1" << endl;
+                    if (exitOnNonEmptyIntersect) {
+                        return;
+                    }
+                }
             }
-
             EightPuzzleNode* currentNode = 
                 getNextNode(open, visited);
             closed->insert(currentNode);            
+    
+            if (checkIntersection) {
+                bool nonEmptyIntersection = 
+                    printIntersectionOfOpenAndClosed(
+                        *open, *closed);
+                if (nonEmptyIntersection) {
+                    cout << "NonEmpty after 1" << endl;
 
-            nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(
-                    *open, *closed);
-            if (nonEmptyIntersection) {
-                cout << "NonEmpty after 1" << endl;
-
-                EightPuzzleNode* nextNode = 
-                    getNextNode(open, visited);
-                cout << "Current node" << endl;
-                currentNode->printNodeDebug();
-                cout << "Next node" << endl;
-                nextNode->printNodeDebug();
-                return;
+                    EightPuzzleNode* nextNode = 
+                        getNextNode(open, visited);
+                    cout << "Current node" << endl;
+                    currentNode->printNodeDebug();
+                    cout << "Next node" << endl;
+                    nextNode->printNodeDebug();
+                    if (exitOnNonEmptyIntersect) {
+                        return;
+                    }
+                }
             }
-
             
 
             //currentNode->printNodeDebug();
@@ -169,26 +177,38 @@ void doAStar(auto *open, auto *closed, auto intersectNode)
                 break;
             } else { // this isn't the goal
                 // get the successors who aren't on the closed list
-             bool nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(
-                    *open, *closed);
-            if (nonEmptyIntersection) {
-                cout << "NonEmpty before" << endl;
-                return;
+             if (checkIntersection) {
+                 bool nonEmptyIntersection = 
+                    printIntersectionOfOpenAndClosed(
+                        *open, *closed);
+                if (nonEmptyIntersection) {
+                    cout << "NonEmpty before" << endl;
+                    if (exitOnNonEmptyIntersect) {
+                        return;
+                    }
+                }
             }
             insertSuccessors(open, closed,
                 currentNode); 
-
-            nonEmptyIntersection = 
-                printIntersectionOfOpenAndClosed(
-                    *open, *closed);
-            if (nonEmptyIntersection) {
-                cout << "NonEmpty after" << endl;
-                currentNode->printNodeDebug();
-                return;
+            
+            if (checkIntersection) {
+                bool nonEmptyIntersection = 
+                    printIntersectionOfOpenAndClosed(
+                        *open, *closed);
+                if (nonEmptyIntersection) {
+                    cout << "NonEmpty after" << endl;
+                    currentNode->printNodeDebug();
+                    if (exitOnNonEmptyIntersect) {
+                        return;
+                    }
+                }
             }
  
             }
+        }
+
+        if (open->empty()) {
+            cout << "Open empty" << endl;
         }
 }
 
@@ -243,6 +263,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/*
 void printOpenList(
         priority_queue<EightPuzzleNode*,
             vector<EightPuzzleNode*>,
@@ -260,6 +281,7 @@ void printOpenList(
     }
     cout << endl;
 }
+*/
 
 void printClosedList(auto closedList)
 {

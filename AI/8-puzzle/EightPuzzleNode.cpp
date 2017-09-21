@@ -6,6 +6,27 @@ using namespace std;
 
 unsigned int EightPuzzleNode::nextId = 0;
 
+bool EightPuzzleNode::compareBoardAndScore(
+    EightPuzzleNode* node1, EightPuzzleNode* node2)
+{
+   // < board
+   if (EightPuzzleNode::comparisonFunctionBoard(node1, node2)) {
+    // < score
+    if (EightPuzzleNode::comparisonFunction(node1, node2)) {
+        return true;
+    }
+    return false;
+   // > board
+   } else {
+    
+    if (EightPuzzleNode::comparisonFunction(node1, node2)) {
+        return false;
+    }
+    return false;
+   
+   }
+}
+
 // returns whether or not node1 > node2
 // false means 0 or 1
 // true means -1
@@ -44,12 +65,12 @@ bool EightPuzzleNode::comparisonFunctionEqualBoard(
 
 // less is better
 // compare two nodes:
-// returns  0 if equal
+// returns  0 if equal score
 // returns -1 if this node is "less than" the other node
 // returns  1 if this node is "greater than" the other node
 int EightPuzzleNode::compareToNode(EightPuzzleNode& node)
 {
-    if (areBoardsSame(node)) {
+    if (score == node.getScore()) {
         return 0;
     } else if (score < node.getScore()) {
         return -1;
@@ -63,6 +84,15 @@ int EightPuzzleNode::compareToNode(EightPuzzleNode& node)
             return -1;
        }
     }
+}
+
+// create a node from scratch for debugging
+EightPuzzleNode::EightPuzzleNode(EightPuzzleNode*
+    parent, EightPuzzleBoard board, EightPuzzleNodeManager& manager, int score) :
+        parent(parent), board(board), manager(manager),
+        score(score)
+{
+    setId();
 }
 
 // create a node from scratch

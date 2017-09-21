@@ -31,12 +31,19 @@ class EightPuzzleNode
 public: 
     EightPuzzleNode* parent;
  static unsigned int nextId;
+ static bool compareBoardAndScore(
+      EightPuzzleNode* node1, EightPuzzleNode* node2);
  static bool comparisonFunction(
       EightPuzzleNode* node1, EightPuzzleNode* node2);
  static bool comparisonFunctionBoard(
       EightPuzzleNode* node1, EightPuzzleNode* node2);
  static bool comparisonFunctionEqualBoard(
       EightPuzzleNode* node1, EightPuzzleNode* node2);
+    // create a node from scratch for debugging
+    EightPuzzleNode(EightPuzzleNode* parent,
+        EightPuzzleBoard board,
+        EightPuzzleNodeManager& manager,
+        int score);
     // create a node from scratch
     EightPuzzleNode(EightPuzzleNode* parent,
         EightPuzzleBoard board,

@@ -20,6 +20,9 @@ public:
     EightPuzzleNodeManager(int heuristic);
     ~EightPuzzleNodeManager();
 
+    // new node from scratch debugging
+    EightPuzzleNode* newNode(EightPuzzleNode* parent,
+        EightPuzzleBoard board, int score);
     // new node from scratch
     EightPuzzleNode* newNode(EightPuzzleNode* parent,
         EightPuzzleBoard board);

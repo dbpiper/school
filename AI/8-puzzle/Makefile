@@ -1,4 +1,4 @@
-all: random_board a-star
+all: random_board a-star test
 random_board:
 	g++ -g -std=c++17 -o random_board random_board.cpp \
 	EightPuzzleBoard.cpp \
@@ -10,5 +10,11 @@ a-star:
 	EightPuzzleMove.cpp EightPuzzleNode.cpp \
 	EightPuzzleNodeManager.cpp
 
+test:
+	g++ -g -std=c++17 -o test test.cpp \
+	EightPuzzleBoard.cpp \
+	EightPuzzleMove.cpp EightPuzzleNode.cpp \
+	EightPuzzleNodeManager.cpp
+
 clean:
-	rm -rf random_board a-star
+	rm -rf random_board a-star test

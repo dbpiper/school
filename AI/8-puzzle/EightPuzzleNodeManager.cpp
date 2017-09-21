@@ -7,6 +7,15 @@ EightPuzzleNodeManager::EightPuzzleNodeManager(int heuristic)
     this->heuristic =
         static_cast<SelectedHeuristic>(heuristic);
 }
+// new node from scratch debugging
+EightPuzzleNode*
+    EightPuzzleNodeManager::newNode(EightPuzzleNode* parent,
+    EightPuzzleBoard board, int score)
+{
+    EightPuzzleNode* newNode = new EightPuzzleNode(parent, board, (*this), score);
+    nodes.push_back(newNode);
+    return newNode;
+}
 
 // new node from scratch
 EightPuzzleNode*
