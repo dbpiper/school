@@ -8,12 +8,9 @@
 enum SelectedHeuristic
 {
     Zero, //Uniform Cost Search
-    // https://heuristicswiki.wikispaces.com/Misplaced+Tiles
     Displacement, // [0, 8] number of tiles 
                   // not in correct place
-    // see https://heuristicswiki.wikispaces.com/Manhattan+Distance
     Manhattan, // manhattan distance from goal
-    // see https://heuristicswiki.wikispaces.com/Tiles+out+of+row+and+column
     TilesOutRowCol // tiles not in proper row + not in column 
 };
 

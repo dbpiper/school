@@ -14,7 +14,7 @@
 #include "EightPuzzleNode.h"
 #include "EightPuzzleNodeManager.h"
 
-void printClosedList(auto closedList);
+void printSet(auto setToPrint);
 bool printIntersectionOfOpenAndClosed(auto openList, auto closedList);
 void removeClosedFromOpen(auto* openList, auto closedList);
 void printIntersectionOfSuccAndClosed(auto succ, auto closed);
@@ -22,6 +22,8 @@ void printIntersectionOfSuccAndClosed(auto succ, auto closed);
 bool checkIntersection = false;
 bool exitOnNonEmptyIntersect = false;
 bool printNodes = true;
+bool printClosed = false;
+bool printOpen = false;
 
 EightPuzzleNode* createNode(EightPuzzleNodeManager* manager,
     vector< vector<int> > pieces) {
@@ -91,6 +93,15 @@ void doAStar(auto *open, auto *closed)
         int maxNodesInMem = 0;
         while (!open->empty()) {
             //removeClosedFromOpen(&open, closed);
+            if (printOpen) {
+                cout << "Open set: " << endl;
+                printSet(*open);
+            }
+            if (printClosed) {
+                cout << "Closed set: " << endl;
+                printSet(*closed);
+            }
+
             if (checkIntersection) {
                 bool nonEmptyIntersection = 
                     printIntersectionOfOpenAndClosed(*open, *closed);
@@ -234,10 +245,16 @@ void printOpenList(
 }
 */
 
-void printClosedList(auto closedList)
+void printSet(auto setToPrint)
 {
-    cout << "Closed list: " << endl;
-    for (auto node : closedList) {
+    cout << "Set: " << endl;
+    vector<EightPuzzleNode*> nodes;
+    while (!setToPrint.empty()) {
+        auto found = setToPrint.begin();
+        nodes.push_back(*found);
+        setToPrint.erase(found);
+    }
+    for (auto node : nodes) {
         node->printNodeDebug();
     }
     cout << endl;

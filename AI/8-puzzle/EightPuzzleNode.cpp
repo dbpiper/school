@@ -37,7 +37,7 @@ bool EightPuzzleNode::comparisonFunction(
     // 0 ==
     // not less than
     if (comparison == 0) {
-        return false;
+        return EightPuzzleNode::comparisonFunctionBoard(node1, node2);
     } else if (comparison == 1) {
         return false;
         // is less than
@@ -295,7 +295,7 @@ bool EightPuzzleNode::isGoal()
           {6, 7, 8} 
         };
     EightPuzzleBoard goal{goalPieces};
-    return EightPuzzleBoard::compareBoards(
+    return EightPuzzleBoard::compareBoards2(
         board,
         goal) == 0;
 }

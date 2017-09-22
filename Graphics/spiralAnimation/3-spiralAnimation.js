@@ -59,14 +59,14 @@ function GeneratePoints() {
 
     // generate 360 points for the rose
    
+    for var theta=0; theta<360; theta += 1) {
+        var angle = theta*Math.PI/180.0;
+        vertices.push(vec2(Math.cos(k*angle)*Math.cos(angle),
+                    Math.cos(k*angle)*Math.sin(angle)));
+    }
    
    
-   
-   
-   
-   
-   
-
+  
     // generate 2000 points for the spiral
     vertices.push(vec2(0, 0));
    
