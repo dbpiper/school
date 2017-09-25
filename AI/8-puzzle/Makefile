@@ -1,4 +1,4 @@
-all: random_board a-star test
+all: random_board a-star
 random_board:
 	g++ -g -std=c++17 -o random_board random_board.cpp \
 	EightPuzzleBoard.cpp \
