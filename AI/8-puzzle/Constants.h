@@ -11,7 +11,7 @@ enum SelectedHeuristic
     Displacement, // [0, 8] number of tiles 
                   // not in correct place
     Manhattan, // manhattan distance from goal
-    TilesOutRowCol // tiles not in proper row + not in column 
+    TilesOutRowCol // tiles not in proper row + not in column (1+2)
 };
 
 #endif
