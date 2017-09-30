@@ -4,9 +4,9 @@
 
 const bool printN = true;
 const bool printLast = true;
-const double tempStep = 0.01;
+const double tempStep = 1;
 
-double temp = 20;
+double temp = 1000;
 
 random_device rd;
 mt19937 gen(rd());
@@ -37,9 +37,9 @@ int main(int argc, char* argv[])
         valueChange = currentValue;
 
         while ((valueChange > tolerance 
-                || arePointsSame(
-                    currentPoint, oldPoint, dims)) 
-               && N < 100000) {
+            || arePointsSame(
+            currentPoint, oldPoint, dims)) && N < 100000 &&
+                temp > 0) {
             printStep(currentPoint, dims, currentValue);
             oldValue = currentValue;
             copyPoint(currentPoint, oldPoint, dims);
@@ -107,15 +107,18 @@ double movePoint(double point[], int dims,
     SumofGaussians *sog)
 {
     double newPoint[dims];
-
+    
+    double usePoint = false;;
+    
     for (int i = 0; i < dims; i++) {
         double r = moveDis(gen);
         cout << "runif: " << r << endl;
         newPoint[i] = point[i] + r;
     }
-    
-    if (useNewPoint(point, dims,
-        newPoint, sog)) { 
+    usePoint = useNewPoint(point, dims,
+        newPoint, sog);
+
+    if (usePoint) {
         for (int i = 0; i < dims; i++) {
             point[i] = newPoint[i];
         }
