@@ -5,8 +5,9 @@
 const bool printN = true;
 const bool printLast = true;
 const double tempStep = 1;
+const bool allowSameNodes = false;
 
-double temp = 1000;
+double temp = 10000;
 
 random_device rd;
 mt19937 gen(rd());
@@ -30,6 +31,8 @@ int main(int argc, char* argv[])
         double valueChange;
         double oldValue;
         double tolerance = 0.00000001;
+        bool usedPoint = false;
+        int timesRejected = 0;
         int N = 0;
 
         generateRandomPoint(currentPoint, dims);
@@ -37,14 +40,21 @@ int main(int argc, char* argv[])
         valueChange = currentValue;
 
         while ((valueChange > tolerance 
-            || arePointsSame(
-            currentPoint, oldPoint, dims)) && N < 100000 &&
-                temp > 0) {
+            || !usedPoint
+            
+            ) && N < 100000
+                && timesRejected < 5000
+                ) {
             printStep(currentPoint, dims, currentValue);
             oldValue = currentValue;
             copyPoint(currentPoint, oldPoint, dims);
-            // move the point by 0.01 * derivative
-            movePoint(currentPoint, dims, &sog);    
+            // move the point by runif(-0.01, 0.01)
+            usedPoint = movePoint(currentPoint, dims, &sog);    
+            if (!usedPoint) {
+                timesRejected++;
+            } else {
+                timesRejected = 0;
+            }
             currentValue = sog.eval(currentPoint);
             valueChange = abs(currentValue - oldValue);
             temp -= tempStep;
@@ -103,7 +113,7 @@ bool useNewPoint(double point[], int dims,
     return false;
 }
 
-double movePoint(double point[], int dims, 
+bool movePoint(double point[], int dims, 
     SumofGaussians *sog)
 {
     double newPoint[dims];
@@ -122,8 +132,9 @@ double movePoint(double point[], int dims,
         for (int i = 0; i < dims; i++) {
             point[i] = newPoint[i];
         }
+        return true;
     }
-
+    return false; 
 }
 
 double printPoint(double point[], int dims)

@@ -10,7 +10,7 @@ greedy:
 	helper.cpp
 
 sa:
-	g++ -g -std=c++17 -o sa sa.cpp \
+	g++ -O2 -std=c++17 -o sa sa.cpp \
 	SumofGaussians.cpp \
 	helper.cpp
 

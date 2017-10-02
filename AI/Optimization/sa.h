@@ -20,7 +20,7 @@ using namespace std;
 bool acceptProbability(double probability);
 double generateProbability(double newScore, double oldScore);
 double generateRandomPoint(double point[], int dims);
-double movePoint(double point[], int dims, 
+bool movePoint(double point[], int dims, 
     SumofGaussians *sog);
 double printPoint(double point[], int dims);
 double printStep(double point[], int dims, double value);
