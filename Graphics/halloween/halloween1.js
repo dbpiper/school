@@ -68,6 +68,17 @@ function GeneratePoints() {
 		GenerateStar();
 		GenerateSky();
 		GenerateGround();
+		GenerateMountain();
+}
+
+function GenerateMountain() {
+	var darkBrown = vec4(0.527, 0.322, 0.18, 1);
+	points.push(vec2(0, 1));
+	colors.push(darkBrown);
+	points.push(vec2(0.5, 0));
+	colors.push(darkBrown);
+	points.push(vec2(1, 1));
+	colors.push(darkBrown);
 }
 
 function GenerateSky() {
@@ -401,12 +412,16 @@ function DrawOneStarTranslate(x, y)
 {
     // draw the full star
     for (var i=1; i <= 5; i++) {
-         t = translate(x, y, 0);
+         modelViewStack.push(modelViewMatrix);
+		 
+		 t = translate(x, y, 0);
          r = rotate(72*i, 0, 0, 1);
 		 modelViewMatrix = r;
          
          modelViewMatrix = mult(t, r);
          DrawOneBranch();
+		 
+		 modelViewMatrix = modelViewStack.pop();
          
     }
 }
@@ -433,7 +448,8 @@ function DrawOneBranch()
 	modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays( gl.LINE_LOOP, 194, 6);
-
+	modelViewMatrix = modelViewStack.pop();
+	
     /*
     modelViewMatrix = modelViewStack.pop();
     //s = scale4(1/8, -1/8, 1);
@@ -477,6 +493,21 @@ function DrawGround() {
 
 }
 
+function DrawMountain() {
+
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(5, -5, 1); 
+	var t = translate(0, 4, 0);
+		
+	modelViewMatrix = mult(modelViewMatrix, t);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.TRIANGLE_STRIP, 208, 3);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
 // from Mozilla
 function getRandomFloat(min, max) {
   return Math.random() * (max - min) + min; //The maximum is exclusive and the minimum is inclusive
@@ -489,13 +520,6 @@ function DrawStars()
 		y = getRandomFloat(0.25, 8);
 		DrawOneStarTranslate(x, y);
 	}
-/*	
-	   DrawOneStarTranslate(-6, 5);
-	   DrawOneStarTranslate(-2, 5);
-	   DrawOneStarTranslate(0, 5);
-	   DrawOneStarTranslate(2, 5);
-	   DrawOneStarTranslate(5, 5);
-*/
 }
 
 function render() {
@@ -510,7 +534,7 @@ function render() {
 		
        // draw stars and mountains... next
 	   DrawStars();
-	   
+	   DrawMountain();
 	   
        // then, draw planet, add rings too
        DrawFullPlanet();
