@@ -67,6 +67,7 @@ function GeneratePoints() {
     	GenerateGhost();
 		GenerateStar();
 		GenerateSky();
+		GenerateGround();
 }
 
 function GenerateSky() {
@@ -80,6 +81,19 @@ function GenerateSky() {
 	colors.push(lightPurple);
 	points.push(vec2(1, 1));
 	colors.push(darkPurple);
+}
+
+function GenerateGround() {
+	var darkGreen = vec4(0, 0.29, 0, 1);
+	var lightGreen = vec4(0.42, 0.46, 0.14, 1);
+	points.push(vec2(0, 0));
+	colors.push(lightGreen);
+	points.push(vec2(0, 1));
+	colors.push(darkGreen);
+	points.push(vec2(1, 0));
+	colors.push(lightGreen);
+	points.push(vec2(1, 1));
+	colors.push(darkGreen);
 }
 
 function GenerateStar() {
@@ -443,14 +457,23 @@ function DrawSky() {
     gl.drawArrays( gl.TRIANGLE_STRIP, 200, 4);
 	
 	modelViewMatrix = modelViewStack.pop();
-	
-    /*
-    modelViewMatrix = modelViewStack.pop();
-    //s = scale4(1/8, -1/8, 1);
-    modelViewMatrix = mult(modelViewMatrix, s);
+
+}
+
+function DrawGround() {
+    var s;
+
+	 modelViewStack.push(modelViewMatrix);
+	 
+    s = scale4(20, 8, 1); 
+	var t = translate(-10, -8, 0);
+		
+	modelViewMatrix = mult(modelViewMatrix, t);
+	modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays( gl.LINE_STRIP, 0, vertices.length);
-    */
+    gl.drawArrays( gl.TRIANGLE_STRIP, 204, 4);
+	
+	modelViewMatrix = modelViewStack.pop();
 
 }
 
@@ -481,6 +504,8 @@ function render() {
        gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
        // draw ground and sky first
+
+	   DrawGround();
 	   DrawSky();
 		
        // draw stars and mountains... next
