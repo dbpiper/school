@@ -9,6 +9,19 @@ var colors=[];
 
 var cmtStack=[];
 
+
+// rotate takes angles in degrees
+var ringRotationAngle = 60;
+
+// used to automate the drawaing process
+var numPointsDrawn;
+
+var PLANET_POINTS = 80;
+var GHOST_POINTS = 114;
+var STAR_POINTS = 6;
+var SKY_POINTS = 4;
+var GROUND_POINTS = 4;
+
 function main() {
     canvas = document.getElementById( "gl-canvas" );
 
@@ -90,13 +103,59 @@ function GeneratePoints() {
 		GenerateEllipse(1, 1, green);
 		GenerateEllipse(1, 1, yellow);
 		GenerateEllipse(1, 1, red);
+		GenerateEllipse(1, 1, purple);
+		
+		GenerateBowBack();
+		GenerateBowString();
+		
+		GenerateArrowShaftHalf();
 }
+
+function GenerateArrowShaftHalf() {
+	var blue = vec4(0, 0, 1, 1);
+	points.push(vec2(1, 1));
+	colors.push(blue);
+	points.push(vec2(0, 0));
+	colors.push(blue);
+	points.push(vec2(0, 3));
+	colors.push(blue);
+	points.push(vec2(1, 3));
+	colors.push(blue);
+}
+
+function GenerateBowString() {
+	var yellow = vec4(1, 1, 0, 1);
+	GenerateEllipseTop(1, 1, yellow);
+}
+
+function GenerateBowBack() {
+	var yellow = vec4(1, 1, 0, 1);
+	points.push(vec2(-1, 0));
+	colors.push(yellow);
+	points.push(vec2(1, 0));
+	colors.push(yellow);
+}
+
 
 // from 
 // https://www.opengl.org/discussion_boards/showthread.php/123411-How-to-draw-an-oval
 function GenerateEllipse(xradius, yradius, color) {
 	
 	for(var i=0; i < 360; i++)
+	{
+		 //convert degrees into radians
+		var degInRad = i*(2*Math.PI/360);
+		var x = Math.cos(degInRad)*xradius;
+		var y = Math.sin(degInRad)*yradius;
+		points.push(vec2(x, y));
+		colors.push(color);
+	} 
+	
+}
+
+function GenerateEllipseTop(xradius, yradius, color) {
+	
+	for(var i=0; i < 180; i++)
 	{
 		 //convert degrees into radians
 		var degInRad = i*(2*Math.PI/360);
@@ -540,7 +599,7 @@ function DrawMountain() {
 	modelViewStack.push(modelViewMatrix);
 	
     var s = scale4(5, -5, 1); 
-	var t = translate(0, 4, 0);
+	var t = translate(-8, 4, 0);
 		
 	modelViewMatrix = mult(modelViewMatrix, t);
 	modelViewMatrix = mult(modelViewMatrix, s);
@@ -571,7 +630,7 @@ function DrawGreenRingBack() {
     var s = scale4(2, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -590,7 +649,7 @@ function DrawGreenRingFront() {
     var s = scale4(2, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -607,10 +666,10 @@ function DrawGreenRingFront() {
 function DrawYellowRingBack() {
 		modelViewStack.push(modelViewMatrix);
 	
-    var s = scale4(1.9, 1, 1); 
+    var s = scale4(1.8, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -626,10 +685,10 @@ function DrawYellowRingBack() {
 function DrawYellowRingFront() {
 		modelViewStack.push(modelViewMatrix);
 	
-    var s = scale4(1.9, 1, 1); 
+    var s = scale4(1.8, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -645,10 +704,10 @@ function DrawYellowRingFront() {
 function DrawRedRingBack() {
 		modelViewStack.push(modelViewMatrix);
 	
-    var s = scale4(1.8, 1, 1); 
+    var s = scale4(1.6, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -664,10 +723,10 @@ function DrawRedRingBack() {
 function DrawRedRingFront() {
 		modelViewStack.push(modelViewMatrix);
 	
-    var s = scale4(1.8, 1, 1); 
+    var s = scale4(1.6, 1, 1); 
 	var t = translate(-4, 5, 0);
 	
-	var rAngle = 10 * (2*Math.PI/360);
+	var rAngle = ringRotationAngle;
 	
 	var r = rotate(rAngle, 0, 0, 1);
 	
@@ -679,6 +738,168 @@ function DrawRedRingFront() {
 	
 	modelViewMatrix = modelViewStack.pop();
 }
+
+
+function DrawPurpleRingBack() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.4, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = ringRotationAngle;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1291, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawPurpleRingFront() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.4, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = ringRotationAngle;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1471, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawBowAndArrow() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1, 1, 1); 
+	var t = translate(40, 0, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+	DrawBowBack();
+	DrawBowString();
+	DrawArrow();
+
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawBowBack() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(10, 10, 1); 
+	var t = translate(0, 0, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1651, 2);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawBowString() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(10, 10, 1); 
+	var t = translate(0, 0, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1653, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawArrow() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(-1, 1, 1); 
+	var t = translate(0, 10, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+	DrawArrowRightHalf();
+	DrawArrowLeftHalf();
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawArrowRightHalf() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(2, -5, 1); 
+	var t = translate(0, 0, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1833, 4);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+
+function DrawArrowLeftHalf() {
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(-1, 1, 1); 
+	var t = translate(0, 0, 0);
+	
+	// rotate takes angle in degrees
+	var rAngle = 0;
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+	DrawArrowRightHalf();
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
 
 // from Mozilla + stackoverflow
 function getRandomFloat(min, max) {
@@ -712,12 +933,14 @@ function render() {
 	   DrawGreenRingBack();
 	   DrawYellowRingBack();
 	   DrawRedRingBack();
+	   DrawPurpleRingBack();
 	   
        DrawFullPlanet();
 	   
 	   DrawGreenRingFront();
 	   DrawYellowRingFront();
 	   DrawRedRingFront();
+	   DrawPurpleRingFront();
 	   
        // then, draw ghost
        modelViewMatrix = mat4();
@@ -729,4 +952,6 @@ function render() {
 
 
        // add other things, like bow, arrow, spider, flower, tree ...
+	   DrawBowAndArrow();
+	   
 }
