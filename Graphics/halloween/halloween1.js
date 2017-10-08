@@ -82,13 +82,14 @@ function GeneratePoints() {
 		GenerateMountain();
 		
 		var green = RGBToDecimal(vec4(46, 139, 87, 1));
-		/*
-		var yellow = vec4();
-		var red = vec4();
-		var purple = vec4();
-		*/
+		var yellow = RGBToDecimal(vec4(255, 255, 0, 1));
+		var red = RGBToDecimal(vec4(255, 0, 0, 1));
+		var purple = RGBToDecimal(vec4(128, 0, 128, 1));
+	
 		
 		GenerateEllipse(1, 1, green);
+		GenerateEllipse(1, 1, yellow);
+		GenerateEllipse(1, 1, red);
 }
 
 // from 
@@ -603,6 +604,82 @@ function DrawGreenRingFront() {
 }
 
 
+function DrawYellowRingBack() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.9, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 571, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawYellowRingFront() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.9, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 751, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawRedRingBack() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.8, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 931, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawRedRingFront() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(1.8, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 1111, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
 // from Mozilla + stackoverflow
 function getRandomFloat(min, max) {
   return Math.random() * (max - min) + min; //The maximum is exclusive and the minimum is inclusive
@@ -633,8 +710,14 @@ function render() {
 	   
        // then, draw planet, add rings too
 	   DrawGreenRingBack();
+	   DrawYellowRingBack();
+	   DrawRedRingBack();
+	   
        DrawFullPlanet();
+	   
 	   DrawGreenRingFront();
+	   DrawYellowRingFront();
+	   DrawRedRingFront();
 	   
        // then, draw ghost
        modelViewMatrix = mat4();
