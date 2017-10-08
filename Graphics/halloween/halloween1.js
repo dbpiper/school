@@ -62,6 +62,17 @@ function scale4(a, b, c) {
 }
 
 
+function RGBValueToDecimal(rgbValue) {
+	return rgbValue / 255;
+}
+
+function RGBToDecimal(rgbVector) {
+	return vec4(RGBValueToDecimal(rgbVector[0]),
+				RGBValueToDecimal(rgbVector[1]),
+				RGBValueToDecimal(rgbVector[2]),
+				rgbVector[3]);
+}
+
 function GeneratePoints() {
     	GeneratePlanet();
     	GenerateGhost();
@@ -69,10 +80,35 @@ function GeneratePoints() {
 		GenerateSky();
 		GenerateGround();
 		GenerateMountain();
+		
+		var green = RGBToDecimal(vec4(46, 139, 87, 1));
+		/*
+		var yellow = vec4();
+		var red = vec4();
+		var purple = vec4();
+		*/
+		
+		GenerateEllipse(1, 1, green);
+}
+
+// from 
+// https://www.opengl.org/discussion_boards/showthread.php/123411-How-to-draw-an-oval
+function GenerateEllipse(xradius, yradius, color) {
+	
+	for(var i=0; i < 360; i++)
+	{
+		 //convert degrees into radians
+		var degInRad = i*(2*Math.PI/360);
+		var x = Math.cos(degInRad)*xradius;
+		var y = Math.sin(degInRad)*yradius;
+		points.push(vec2(x, y));
+		colors.push(color);
+	} 
+	
 }
 
 function GenerateMountain() {
-	var darkBrown = vec4(0.527, 0.322, 0.18, 1);
+	var darkBrown = vec4(0.52, 0, 0, 1);
 	points.push(vec2(0, 1));
 	colors.push(darkBrown);
 	points.push(vec2(0.5, 0));
@@ -399,12 +435,17 @@ function DrawGhost() {
 }
 
 function DrawFullPlanet() {
+	
+	modelViewStack.push(modelViewMatrix);
+	
 	modelViewMatrix=mat4();
 	modelViewMatrix = mult(modelViewMatrix, translate(-4, 5, 0));
 	modelViewMatrix=mult(modelViewMatrix, scale4(1, 1*1.618, 1));
-        gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-        // draw planet circle
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    // draw planet circle
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 80);
+	
+	modelViewMatrix = modelViewStack.pop();
 }
 
 
@@ -508,14 +549,68 @@ function DrawMountain() {
 	modelViewMatrix = modelViewStack.pop();
 }
 
-// from Mozilla
+function DrawMountain2() {
+
+	modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(5, -5, 1); 
+	var t = translate(0, 0, 0);
+		
+	modelViewMatrix = mult(modelViewMatrix, t);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.TRIANGLE_STRIP, 208, 3);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawGreenRingBack() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(2, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 211, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawGreenRingFront() {
+		modelViewStack.push(modelViewMatrix);
+	
+    var s = scale4(2, 1, 1); 
+	var t = translate(-4, 5, 0);
+	
+	var rAngle = 10 * (2*Math.PI/360);
+	
+	var r = rotate(rAngle, 0, 0, 1);
+	
+	var m = mult(t, r);
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 391, 180);
+	
+	modelViewMatrix = modelViewStack.pop();
+}
+
+
+// from Mozilla + stackoverflow
 function getRandomFloat(min, max) {
   return Math.random() * (max - min) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
 function DrawStars()
 {
-	for (var i = 0; i < 75; i++) {
+	for (var i = 0; i < 50; i++) {
 		x = getRandomFloat(-8, 8);
 		y = getRandomFloat(0.25, 8);
 		DrawOneStarTranslate(x, y);
@@ -528,17 +623,19 @@ function render() {
        gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
        // draw ground and sky first
-
 	   DrawGround();
 	   DrawSky();
 		
        // draw stars and mountains... next
 	   DrawStars();
 	   DrawMountain();
+	   DrawMountain2();
 	   
        // then, draw planet, add rings too
+	   DrawGreenRingBack();
        DrawFullPlanet();
-
+	   DrawGreenRingFront();
+	   
        // then, draw ghost
        modelViewMatrix = mat4();
        modelViewMatrix = mult(modelViewMatrix, translate(-5, -2, 0));
