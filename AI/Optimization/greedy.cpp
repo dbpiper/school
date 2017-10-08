@@ -4,8 +4,8 @@
 
 using namespace std;
 
-const bool printN = true;
-const bool printLast = true;
+const bool printN = false;
+const bool printLast = false;
 
 int main(int argc, char* argv[])
 {

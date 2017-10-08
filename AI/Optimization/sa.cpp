@@ -2,8 +2,8 @@
 
 #include "sa.h"
 
-const bool printN = true;
-const bool printLast = true;
+const bool printN = false;
+const bool printLast = false;
 const double tempStep = 1;
 const bool allowSameNodes = false;
 
