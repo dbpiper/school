@@ -15,9 +15,19 @@ var cmtStack=[];
 // rotate takes angles in degrees
 var ringRotationAngle = 60;
 
+// star positions
+var starPositions = [];
 
+// interactivity variables
 var ghostX = 0;
 var ghostY = 0;
+var rotateAngle = 0;
+var arrowMoving = false;
+var arrowX = 0;
+var arrowY = 0;
+
+var animationCounter = 0;
+var arrowFired = false;
 
 var PLANET_POINTS = 80;
 var GHOST_POINTS = 114;
@@ -40,9 +50,29 @@ function main() {
         var key = String.fromCharCode(event.keyCode);
         switch (key) {
           case 'S':
-            ghostX = getRandomFloat(-7, 7);
-		        ghostY = getRandomFloat(0.25, 6);
-            render();
+            if (!arrowMoving) {
+              ghostX = getRandomFloat(-7, 7);
+  		        ghostY = getRandomFloat(0.25, 6);
+              render();
+            }
+            break;
+          case 'L':
+            if (!arrowMoving) {
+              rotateAngle += 10;
+              render();
+            }
+            break;
+          case 'R':
+            if (!arrowMoving) {
+              rotateAngle -= 10;
+              render();
+            }
+            break;
+          case 'F':
+            if (!arrowMoving) {
+              arrowMoving = true;
+              render();
+            }
             break;
         }
     }
@@ -873,7 +903,7 @@ function DrawBowBack() {
 	var t = translate(0, -5, 0);
 
 	// rotate takes angle in degrees
-	var rAngle = 0;
+	var rAngle = rotateAngle;
 
 	var r = rotate(rAngle, 0, 0, 1);
 
@@ -894,7 +924,7 @@ function DrawBowString() {
 	var t = translate(0, -5, 0);
 
 	// rotate takes angle in degrees
-	var rAngle = 0;
+	var rAngle = rotateAngle;
 
 	var r = rotate(rAngle, 0, 0, 1);
 
@@ -908,23 +938,71 @@ function DrawBowString() {
 	modelViewMatrix = modelViewStack.pop();
 }
 
-function DrawArrow() {
+function DrawArrowTranslate(tx, ty) {
 	modelViewStack.push(modelViewMatrix);
 
+
   var s = scale4(0.3, -0.7, 1);
-	var t = translate(0, -4, 0);
+	var t = translate(0 + tx, -5 + ty, 0);
+
+  var t2 = translate(0 , 1, 0)
 
 	// rotate takes angle in degrees
-	var rAngle = 0;
+	var rAngle = rotateAngle;
 
 	var r = rotate(rAngle, 0, 0, 1);
 
 	var m = mult(t, r);
+  var m = mult(m, t2);
   modelViewMatrix = mat4();
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
+
+  /*
+  // update bounding box
+  arrowBoundingBox.translate(0, -5);
+  arrowBoundingBox.rotate(rAngle);
+  arrowBoundingBox.translate(0, 1);
   arrowBoundingBox.scale(0.3, -0.7);
-  arrowBoundingBox.translate(0, -4);
+  */
+
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+  gl.drawArrays( gl.LINE_STRIP, 1833, 4);
+  gl.drawArrays( gl.LINE_STRIP, 1837, 4);
+
+	modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawArrow() {
+	modelViewStack.push(modelViewMatrix);
+
+  /*
+  var s = scale4(0.3, -0.7, 1);
+	var t = translate(0, -4, 0);
+  */
+  var s = scale4(0.3, -0.7, 1);
+	var t = translate(0, -5, 0);
+  var t2 = translate(0, 1, 0)
+
+	// rotate takes angle in degrees
+	var rAngle = rotateAngle;
+
+	var r = rotate(rAngle, 0, 0, 1);
+
+	var m = mult(t, r);
+  var m = mult(m, t2);
+  modelViewMatrix = mat4();
+	modelViewMatrix = mult(modelViewMatrix, m);
+	modelViewMatrix = mult(modelViewMatrix, s);
+
+  /*
+  // update bounding box
+  arrowBoundingBox.translate(0, -5);
+  arrowBoundingBox.rotate(rAngle);
+  arrowBoundingBox.translate(0, 1);
+  arrowBoundingBox.scale(0.3, -0.7);
+  */
+
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.drawArrays( gl.LINE_STRIP, 1833, 4);
   gl.drawArrays( gl.LINE_STRIP, 1837, 4);
@@ -980,24 +1058,27 @@ function getRandomFloat(min, max) {
 
 function DrawStars()
 {
-	for (var i = 0; i < 50; i++) {
-		x = getRandomFloat(-8, 8);
-		y = getRandomFloat(0.25, 8);
-		DrawOneStarTranslate(x, y);
-	}
-}
-
-function RandomlyPlaceGhost() {
-		x = getRandomFloat(-7, 7);
-		y = getRandomFloat(0.25, 6);
-		DrawGhostTranslate(x, y);
+  if (starPositions.length == 0) {
+  	for (var i = 0; i < 50; i++) {
+  		var x = getRandomFloat(-8, 8);
+  		var y = getRandomFloat(0.25, 8);
+  		DrawOneStarTranslate(x, y);
+      starPositions.push([x, y]);
+  	}
+  } else {
+    var len = starPositions.length;
+    for (var i = 0; i < len; i++) {
+        var x = starPositions[i][0];
+        var y = starPositions[i][1];
+  	    DrawOneStarTranslate(x, y);
+    }
+  }
 }
 
 function render() {
        gl.clear( gl.COLOR_BUFFER_BIT );
        gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
        gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-
        // draw ground and sky first
 	   DrawGround();
 	   DrawSky();
@@ -1020,12 +1101,34 @@ function render() {
 	   DrawRedRingFront();
 	   DrawPurpleRingFront();
 
-     // then, draw ghost
-		 DrawGhostTranslate(ghostX, ghostY);
-
+     if (!arrowFired) {
+       // then, draw ghost
+  		 DrawGhostTranslate(ghostX, ghostY);
+     }
 
      // add other things, like bow, arrow, spider, flower, tree ...
 	   DrawBow();
-     DrawArrow();
+
+     if (animationCounter > 100 && arrowMoving) {
+       arrowMoving = false;
+       arrowFired = true;
+       requestAnimFrame(render);
+     }
+
+     if (arrowMoving) {
+	     var rAngle = rotateAngle + 90;
+       var angleInRad = rAngle * (Math.PI/180);
+       var stepSize = 1/5;
+
+       arrowX += stepSize * Math.cos(angleInRad);
+       arrowY += stepSize * Math.sin(angleInRad);
+       DrawArrowTranslate(arrowX, arrowY);
+       animationCounter++;
+       requestAnimFrame(render);
+     } else {
+       DrawArrow();
+       arrowX = 0;
+       arrowY = 0;
+     }
 
 }

@@ -35,21 +35,21 @@ class BoundingBox {
   }
 
   static translatePoint(point, tx, ty) {
-    x = point[0] + tx;
-    y = point[1] + ty;
+    var x = point[0] + tx;
+    var y = point[1] + ty;
     return [x, y];
   }
   static scalePoint(point, sx, sy) {
-    x = point[0] * sx;
-    y = point[1] * sy;
+    var x = point[0] * sx;
+    var y = point[1] * sy;
     return [x, y];
   }
   // takes angle in degrees
   // rotates about z-axis
   static rotatePoint(point, angle) {
-    angleInRad = angle * (Math.PI/180);
-    x = point[0] * Math.cos(angleInRad) - point[1] * Math.sin(angleInRad);
-    y = point[0] * Math.sin(angleInRad) + point[1] * Math.cos(angleInRad);
+    var angleInRad = angle * (Math.PI/180);
+    var x = point[0] * Math.cos(angleInRad) - point[1] * Math.sin(angleInRad);
+    var y = point[0] * Math.sin(angleInRad) + point[1] * Math.cos(angleInRad);
     return [x, y];
   }
   translate(tx, ty) {
