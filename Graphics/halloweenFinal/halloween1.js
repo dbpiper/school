@@ -156,6 +156,8 @@ function GenerateArrowShaft() {
 	colors.push(blue);
 	points.push(vec2(-1, 2));
 	colors.push(blue);
+
+  arrowBoundingBox = createBoundingBox(1833, 8);
 }
 
 function GenerateBowString() {
@@ -515,7 +517,10 @@ function GenerateGhost() {
 }
 
 function DrawGhost() {
+    modelViewStack.push(modelViewMatrix);
+
     ghostBoundingBox.scale(1/10, 1/10);
+    modelViewMatrix = mat4();
     modelViewMatrix=mult(modelViewMatrix, scale4(1/10, 1/10, 1));
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays( gl.LINE_LOOP, 80, 87); // body
@@ -529,6 +534,8 @@ function DrawGhost() {
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays( gl.LINE_STRIP, 178, 9);  // right eye
     gl.drawArrays( gl.TRIANGLE_FAN, 187, 7);  // right eye ball
+
+    modelViewMatrix = modelViewStack.pop();
 }
 
 function DrawFullPlanet() {
@@ -816,11 +823,11 @@ function DrawPurpleRingFront() {
 	modelViewMatrix = modelViewStack.pop();
 }
 
-function DrawBowAndArrow() {
+function DrawBow() {
 	modelViewStack.push(modelViewMatrix);
 
-  var s = scale4(1, 1, 1);
-	var t = translate(0, -50, 0);
+  var s = scale4(1/10, 1/10, 1);
+	var t = translate(0, -5, 0);
 
 	// rotate takes angle in degrees
 	var rAngle = 0;
@@ -828,11 +835,11 @@ function DrawBowAndArrow() {
 	var r = rotate(rAngle, 0, 0, 1);
 
 	var m = mult(t, r);
+  modelViewMatrix = mat4();
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
 	DrawBowBack();
 	DrawBowString();
-	DrawArrow();
 
 	modelViewMatrix = modelViewStack.pop();
 }
@@ -880,8 +887,8 @@ function DrawBowString() {
 function DrawArrow() {
 	modelViewStack.push(modelViewMatrix);
 
-    var s = scale4(2, -7, 1);
-	var t = translate(0, 10, 0);
+  var s = scale4(0.3, -0.7, 1);
+	var t = translate(0, -4, 0);
 
 	// rotate takes angle in degrees
 	var rAngle = 0;
@@ -889,8 +896,11 @@ function DrawArrow() {
 	var r = rotate(rAngle, 0, 0, 1);
 
 	var m = mult(t, r);
+  modelViewMatrix = mat4();
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
+  arrowBoundingBox.scale(0.3, -0.7);
+  arrowBoundingBox.translate(0, -4);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.drawArrays( gl.LINE_STRIP, 1833, 4);
   gl.drawArrays( gl.LINE_STRIP, 1837, 4);
@@ -986,6 +996,7 @@ function render() {
 
 
        // add other things, like bow, arrow, spider, flower, tree ...
-	   DrawBowAndArrow();
+	   DrawBow();
+     DrawArrow();
 
 }
