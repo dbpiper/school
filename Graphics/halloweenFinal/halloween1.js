@@ -15,8 +15,9 @@ var cmtStack=[];
 // rotate takes angles in degrees
 var ringRotationAngle = 60;
 
-// used to automate the drawaing process
-var numPointsDrawn;
+
+var ghostX = 0;
+var ghostY = 0;
 
 var PLANET_POINTS = 80;
 var GHOST_POINTS = 114;
@@ -34,6 +35,18 @@ function main() {
 
     modelViewMatrix = mat4();
     projectionMatrix = ortho(-8, 8, -8, 8, -1, 1);
+
+    window.onkeydown = function(event) {
+        var key = String.fromCharCode(event.keyCode);
+        switch (key) {
+          case 'S':
+            ghostX = getRandomFloat(-7, 7);
+		        ghostY = getRandomFloat(0.25, 6);
+            render();
+            break;
+        }
+    }
+
 
     initWebGL();
 
@@ -520,14 +533,11 @@ function DrawGhostTranslate(tx, ty) {
     modelViewStack.push(modelViewMatrix);
 
     ghostBoundingBox.scale(1/10, 1/10);
-    ghostBoundingBox.translate(tx, ty);
-
+    var s = scale4(1/10, 1/10, 1);
+    var t = translate(tx, ty, 0);
+    var m = mult(t, s);
     modelViewMatrix = mat4();
-    var t1 = translate(tx, ty, 0);
-    var s = scale(1/10, 1/10, 1);
-    var m = mult(t1, s)
-
-    modelViewMatrix=mult(modelViewMatrix, s);
+    modelViewMatrix=mult(modelViewMatrix, m);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays( gl.LINE_LOOP, 80, 87); // body
     gl.drawArrays( gl.LINE_LOOP, 167, 6);  // mouth
@@ -978,9 +988,9 @@ function DrawStars()
 }
 
 function RandomlyPlaceGhost() {
-		x = getRandomFloat(-8, 8);
-		y = getRandomFloat(0.25, 8);
-		DrawGhostTranslate(0, 0);
+		x = getRandomFloat(-7, 7);
+		y = getRandomFloat(0.25, 6);
+		DrawGhostTranslate(x, y);
 }
 
 function render() {
@@ -1011,10 +1021,10 @@ function render() {
 	   DrawPurpleRingFront();
 
      // then, draw ghost
-    // RandomlyPlaceGhost();
+		 DrawGhostTranslate(ghostX, ghostY);
 
 
-       // add other things, like bow, arrow, spider, flower, tree ...
+     // add other things, like bow, arrow, spider, flower, tree ...
 	   DrawBow();
      DrawArrow();
 
