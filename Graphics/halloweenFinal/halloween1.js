@@ -516,6 +516,34 @@ function GenerateGhost() {
   ghostBoundingBox = createBoundingBox(80, GHOST_POINTS);
 }
 
+function DrawGhostTranslate(tx, ty) {
+    modelViewStack.push(modelViewMatrix);
+
+    ghostBoundingBox.scale(1/10, 1/10);
+    ghostBoundingBox.translate(tx, ty);
+
+    modelViewMatrix = mat4();
+    var t1 = translate(tx, ty, 0);
+    var s = scale(1/10, 1/10, 1);
+    var m = mult(t1, s)
+
+    modelViewMatrix=mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_LOOP, 80, 87); // body
+    gl.drawArrays( gl.LINE_LOOP, 167, 6);  // mouth
+    gl.drawArrays( gl.LINE_LOOP, 173, 5);  // nose
+
+    gl.drawArrays( gl.LINE_LOOP, 178, 9);  // left eye
+    gl.drawArrays( gl.TRIANGLE_FAN, 187, 7);  // left eye ball
+
+    modelViewMatrix=mult(modelViewMatrix, translate(2.6, 0, 0));
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays( gl.LINE_STRIP, 178, 9);  // right eye
+    gl.drawArrays( gl.TRIANGLE_FAN, 187, 7);  // right eye ball
+
+    modelViewMatrix = modelViewStack.pop();
+}
+
 function DrawGhost() {
     modelViewStack.push(modelViewMatrix);
 
@@ -824,9 +852,14 @@ function DrawPurpleRingFront() {
 }
 
 function DrawBow() {
+	DrawBowBack();
+	DrawBowString();
+}
+
+function DrawBowBack() {
 	modelViewStack.push(modelViewMatrix);
 
-  var s = scale4(1/10, 1/10, 1);
+  var s = scale4(1, 1, 1);
 	var t = translate(0, -5, 0);
 
 	// rotate takes angle in degrees
@@ -838,28 +871,8 @@ function DrawBow() {
   modelViewMatrix = mat4();
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
-	DrawBowBack();
-	DrawBowString();
-
-	modelViewMatrix = modelViewStack.pop();
-}
-
-function DrawBowBack() {
-	modelViewStack.push(modelViewMatrix);
-
-    var s = scale4(10, 10, 1);
-	var t = translate(0, 0, 0);
-
-	// rotate takes angle in degrees
-	var rAngle = 0;
-
-	var r = rotate(rAngle, 0, 0, 1);
-
-	var m = mult(t, r);
-	modelViewMatrix = mult(modelViewMatrix, m);
-	modelViewMatrix = mult(modelViewMatrix, s);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays( gl.LINE_STRIP, 1651, 2);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+  gl.drawArrays( gl.LINE_STRIP, 1651, 2);
 
 	modelViewMatrix = modelViewStack.pop();
 }
@@ -867,8 +880,8 @@ function DrawBowBack() {
 function DrawBowString() {
 	modelViewStack.push(modelViewMatrix);
 
-  var s = scale4(10, 10, 1);
-	var t = translate(0, 0, 0);
+  var s = scale4(1, 1, 1);
+	var t = translate(0, -5, 0);
 
 	// rotate takes angle in degrees
 	var rAngle = 0;
@@ -876,6 +889,7 @@ function DrawBowString() {
 	var r = rotate(rAngle, 0, 0, 1);
 
 	var m = mult(t, r);
+  modelViewMatrix = mat4();
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -963,6 +977,12 @@ function DrawStars()
 	}
 }
 
+function RandomlyPlaceGhost() {
+		x = getRandomFloat(-8, 8);
+		y = getRandomFloat(0.25, 8);
+		DrawGhostTranslate(0, 0);
+}
+
 function render() {
        gl.clear( gl.COLOR_BUFFER_BIT );
        gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
@@ -991,8 +1011,7 @@ function render() {
 	   DrawPurpleRingFront();
 
      // then, draw ghost
-     DrawGhost();
-
+    // RandomlyPlaceGhost();
 
 
        // add other things, like bow, arrow, spider, flower, tree ...
