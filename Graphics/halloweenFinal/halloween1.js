@@ -1,3 +1,9 @@
+/*
+  Bonus Feature:
+    * Bounding Box collision detection and remove ghost and reset arrow
+      upon collision.
+*/
+
 var modelViewMatrix=mat4(); // identity
 var modelViewMatrixLoc;
 var projectionMatrix;
