@@ -1085,9 +1085,9 @@ function DrawStars()
 }
 
 function render() {
-       gl.clear( gl.COLOR_BUFFER_BIT );
-       gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
-       gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.clear( gl.COLOR_BUFFER_BIT );
+    gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
        // draw ground and sky first
 	   DrawGround();
 	   DrawSky();
@@ -1125,6 +1125,7 @@ function render() {
      if (animationCounter > 100 && arrowMoving) {
        arrowMoving = false;
        arrowFired = true;
+       animationCounter = 0;
        requestAnimFrame(render);
      }
 
@@ -1142,12 +1143,17 @@ function render() {
        arrowBoundingBox = DrawArrow();
        arrowX = 0;
        arrowY = 0;
+       arrowMoving = false;
+       animationCounter = 0;
      }
 
-     if (BoundingBox.overlap(ghostBoundingBox, arrowBoundingBox)) {
-       arrowMoving = false;
-       arrowFired = true;
-       requestAnimFrame(render);
+     if (ghostBoundingBox && arrowBoundingBox) {
+       if (BoundingBox.overlap(ghostBoundingBox, arrowBoundingBox)) {
+         arrowMoving = false;
+         arrowFired = true;
+         animationCounter = 0;
+         requestAnimFrame(render);
+       }
      }
 
 }
