@@ -17,10 +17,10 @@ class BoundingBox {
   // another bounding box
   contains(bb) {
     return (
-      this.contains(bb.topLeft) ||
-      this.contains(bb.topRight) ||
-      this.contains(bb.bottomLeft) ||
-      this.contains(bb.bottomRight)
+      this.containsPoint(bb.topLeft) ||
+      this.containsPoint(bb.topRight) ||
+      this.containsPoint(bb.bottomLeft) ||
+      this.containsPoint(bb.bottomRight)
     );
   }
 

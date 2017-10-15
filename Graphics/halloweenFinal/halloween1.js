@@ -1,6 +1,3 @@
-var ghostBoundingBox;
-var arrowBoundingBox;
-
 var modelViewMatrix=mat4(); // identity
 var modelViewMatrixLoc;
 var projectionMatrix;
@@ -199,8 +196,6 @@ function GenerateArrowShaft() {
 	colors.push(blue);
 	points.push(vec2(-1, 2));
 	colors.push(blue);
-
-  arrowBoundingBox = createBoundingBox(1833, 8);
 }
 
 function GenerateBowString() {
@@ -556,13 +551,16 @@ function GenerateGhost() {
 	points.push(vec2(-2.9, 10.5));
         colors.push(vec4(1, 1, 1, 1));
         // end left eye
-  ghostBoundingBox = createBoundingBox(80, GHOST_POINTS);
 }
 
 function DrawGhostTranslate(tx, ty) {
     modelViewStack.push(modelViewMatrix);
 
+    var ghostBoundingBox = createBoundingBox(80, GHOST_POINTS);
+    // update bounding box
     ghostBoundingBox.scale(1/10, 1/10);
+    ghostBoundingBox.translate(tx, ty);
+
     var s = scale4(1/10, 1/10, 1);
     var t = translate(tx, ty, 0);
     var m = mult(t, s);
@@ -582,6 +580,8 @@ function DrawGhostTranslate(tx, ty) {
     gl.drawArrays( gl.TRIANGLE_FAN, 187, 7);  // right eye ball
 
     modelViewMatrix = modelViewStack.pop();
+
+    return ghostBoundingBox;
 }
 
 function DrawGhost() {
@@ -942,6 +942,7 @@ function DrawArrowTranslate(tx, ty) {
 	modelViewStack.push(modelViewMatrix);
 
 
+  var arrowBoundingBox = createBoundingBox(1833, 8);
   var s = scale4(0.3, -0.7, 1);
 	var t = translate(0 + tx, -5 + ty, 0);
 
@@ -958,28 +959,28 @@ function DrawArrowTranslate(tx, ty) {
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
 
-  /*
+
   // update bounding box
-  arrowBoundingBox.translate(0, -5);
-  arrowBoundingBox.rotate(rAngle);
-  arrowBoundingBox.translate(0, 1);
   arrowBoundingBox.scale(0.3, -0.7);
-  */
+  arrowBoundingBox.translate(0, 1);
+  arrowBoundingBox.rotate(rAngle);
+  arrowBoundingBox.translate(0 + tx, -5 + ty);
+
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.drawArrays( gl.LINE_STRIP, 1833, 4);
   gl.drawArrays( gl.LINE_STRIP, 1837, 4);
 
 	modelViewMatrix = modelViewStack.pop();
+
+  return arrowBoundingBox;
 }
 
 function DrawArrow() {
 	modelViewStack.push(modelViewMatrix);
 
-  /*
-  var s = scale4(0.3, -0.7, 1);
-	var t = translate(0, -4, 0);
-  */
+  var arrowBoundingBox = createBoundingBox(1833, 8);
+
   var s = scale4(0.3, -0.7, 1);
 	var t = translate(0, -5, 0);
   var t2 = translate(0, 1, 0)
@@ -995,19 +996,21 @@ function DrawArrow() {
 	modelViewMatrix = mult(modelViewMatrix, m);
 	modelViewMatrix = mult(modelViewMatrix, s);
 
-  /*
+
   // update bounding box
-  arrowBoundingBox.translate(0, -5);
-  arrowBoundingBox.rotate(rAngle);
-  arrowBoundingBox.translate(0, 1);
   arrowBoundingBox.scale(0.3, -0.7);
-  */
+  arrowBoundingBox.translate(0, 1);
+  arrowBoundingBox.rotate(rAngle);
+  arrowBoundingBox.translate(0, -5);
+
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.drawArrays( gl.LINE_STRIP, 1833, 4);
   gl.drawArrays( gl.LINE_STRIP, 1837, 4);
 
 	modelViewMatrix = modelViewStack.pop();
+
+  return arrowBoundingBox;
 }
 
 function DrawArrowRightHalf() {
@@ -1101,13 +1104,17 @@ function render() {
 	   DrawRedRingFront();
 	   DrawPurpleRingFront();
 
+     var ghostBoundingBox;
+     var arrowBoundingBox;
+
      if (!arrowFired) {
        // then, draw ghost
-  		 DrawGhostTranslate(ghostX, ghostY);
+  		 ghostBoundingBox = DrawGhostTranslate(ghostX, ghostY);
      }
 
      // add other things, like bow, arrow, spider, flower, tree ...
 	   DrawBow();
+
 
      if (animationCounter > 100 && arrowMoving) {
        arrowMoving = false;
@@ -1122,13 +1129,19 @@ function render() {
 
        arrowX += stepSize * Math.cos(angleInRad);
        arrowY += stepSize * Math.sin(angleInRad);
-       DrawArrowTranslate(arrowX, arrowY);
+       arrowBoundingBox = DrawArrowTranslate(arrowX, arrowY);
        animationCounter++;
        requestAnimFrame(render);
      } else {
-       DrawArrow();
+       arrowBoundingBox = DrawArrow();
        arrowX = 0;
        arrowY = 0;
+     }
+
+     if (BoundingBox.overlap(ghostBoundingBox, arrowBoundingBox)) {
+       arrowMoving = false;
+       arrowFired = true;
+       requestAnimFrame(render);
      }
 
 }
