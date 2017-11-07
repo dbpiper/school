@@ -310,12 +310,13 @@ function DrawLadder(width, height) {
 }
 
 function DrawLadderRungs(width, height) {
-  for (var i = 1; i < 10; i++) {
+  var numRungs = height / 0.1;
+  for (var i = 1; i < numRungs; i++) {
   	mvMatrixStack.push(modelViewMatrix);
   	t= translate(-width/2, -height/2 + (i * 0.1), 0);
     modelViewMatrix = mult(modelViewMatrix, t);
 
-    DrawLadderRung(0.02, width, 0.02);
+    DrawLadderRung(0.02, width, 0.01);
 
     modelViewMatrix=mvMatrixStack.pop();
   }
@@ -357,7 +358,7 @@ function render()
  	gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 	gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-  DrawLadder(0.25, 1);
+  DrawLadder(0.25, 1.25);
 	// // draw jack// what makes the sphere appear on the same surface?
 	// mvMatrixStack.push(modelViewMatrix);
 	// t=translate(0.6, 0.45, 0.6);
