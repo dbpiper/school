@@ -28,8 +28,71 @@ var rightFrontTowerVertices = [];
 var leftBackTowerVertices = [];
 var rightBackTowerVertices = [];
 
-SetTowerVertices([0, 0, 0], 1.5);
+var frontWallVertices = [];
+var rightWallVertices = [];
+var leftWallVertices = [];
+var backWallVertices = [];
 
+SetVertices();
+
+function SetVertices() {
+  var wallTopHeight = 0.25;
+  SetTowerVertices([0, 0, 0], 1.5);
+  SetFrontWallVertices(wallTopHeight);
+  SetRightWallVertices(wallTopHeight);
+  SetLeftWallVertices(wallTopHeight);
+  SetBackWallVertices(wallTopHeight);
+}
+
+function MakeWallTopVector(vector, wallTopHeight) {
+    newVector = [];
+    var len = vector.length;
+    for (var i = 0; i < len; i++) {
+      newVector.push(vector[i]);
+    }
+
+    newVector[1] -= wallTopHeight;
+    return newVector;
+}
+
+function SetFrontWallVertices(wallTopHeight) {
+  frontWallVertices = [
+    rightFrontTowerVertices[3], // A(0) -- right tower's D(3)
+    MakeWallTopVector(rightFrontTowerVertices[2], wallTopHeight), // B(1) -- right tower's C(2)
+    MakeWallTopVector(leftFrontTowerVertices[1], wallTopHeight), // C(2) -- left tower's B(1)
+    leftFrontTowerVertices[0], // D(3) -- left tower's A(0)
+  ];
+}
+
+function SetRightWallVertices(wallTopHeight) {
+  rightWallVertices = [
+    rightBackTowerVertices[0], // A(0) -- back tower's A(0)
+    MakeWallTopVector(rightBackTowerVertices[1], wallTopHeight), // B(1) -- back tower's B(1)
+    MakeWallTopVector(rightFrontTowerVertices[5], wallTopHeight), // C(2) -- front tower's F(5)
+    rightFrontTowerVertices[4], // D(3) -- front tower's E(4)
+  ];
+}
+
+function SetLeftWallVertices(wallTopHeight) {
+  leftWallVertices = [
+    leftFrontTowerVertices[6], // A(0) -- front tower's G(6)
+    MakeWallTopVector(leftFrontTowerVertices[7], wallTopHeight), // B(1) -- front tower's H(7)
+    MakeWallTopVector(leftBackTowerVertices[2], wallTopHeight), // C(2) -- back tower's C(2)
+    leftBackTowerVertices[3], // D(3) -- back tower's D(3)
+  ];
+}
+
+function SetBackWallVertices(wallTopHeight) {
+  backWallVertices = [
+    leftBackTowerVertices[4], // A(0) -- left tower's E(4)
+    MakeWallTopVector(leftBackTowerVertices[5], wallTopHeight), // B(1) -- left tower's F(5)
+    MakeWallTopVector(rightBackTowerVertices[7], wallTopHeight), // C(2) -- right tower's H(7)
+    rightBackTowerVertices[6], // D(3) -- right tower's G(6)
+  ];
+}
+
+// Generates the vertices programatically
+// to allow easy resizing of the shapes
 function SetTowerVertices(centerPosition, wallWidth) {
   var width = 0.5
   var thickness = 0.5;
@@ -96,11 +159,27 @@ function GenerateVertices() {
   return GenerateVerticesTower(0.5, 0.5, 1, 0.25, [-1, 0, 0]);
 }
 
+function DrawCastle() {
+  DrawTowers();
+  DrawWalls();
+}
+
 function DrawTowers() {
   DrawTower(leftFrontTowerVertices);
   DrawTower(rightFrontTowerVertices);
   DrawTower(leftBackTowerVertices);
   DrawTower(rightBackTowerVertices);
+}
+
+function DrawWalls() {
+  DrawWall(frontWallVertices);
+  DrawWall(rightWallVertices);
+  DrawWall(leftWallVertices);
+  DrawWall(backWallVertices);
+}
+
+function DrawWall(vertices)  {
+  quad(0, 1, 2, 3, vertices);
 }
 
 // triangle has 3 points per call
@@ -253,7 +332,7 @@ window.onload = function init()
     gl.useProgram( program );
 
     // DrawBarn();
-    DrawTowers();
+    DrawCastle();
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer );
