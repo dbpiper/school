@@ -359,6 +359,7 @@ function render()
 	gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
   DrawLadder(0.25, 1.25);
+
 	// // draw jack// what makes the sphere appear on the same surface?
 	// mvMatrixStack.push(modelViewMatrix);
 	// t=translate(0.6, 0.45, 0.6);
@@ -400,7 +401,7 @@ function render()
 	// DrawWall(0.02);
 	// modelViewMatrix=mvMatrixStack.pop();
 
-    requestAnimFrame(render);
+    // requestAnimFrame(render);
 }
 
 // ******************************************
@@ -473,9 +474,9 @@ function quad(a, b, c, d)
 
 function colorCube()
 {
-    	quad( 1, 0, 3, 2 );
-    	quad( 2, 3, 7, 6 );
-    	quad( 3, 0, 4, 7 );
+    	quad( 1, 0, 3, 2 ); //top
+    	quad( 2, 3, 7, 6 ); //right
+    	quad( 3, 0, 4, 7 ); //
     	quad( 6, 5, 1, 2 );
     	quad( 4, 5, 6, 7 );
     	quad( 5, 4, 0, 1 );
