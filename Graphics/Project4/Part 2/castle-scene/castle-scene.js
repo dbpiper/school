@@ -501,6 +501,12 @@ var render = function()
 }
 
 function PositionLadder() {
+    materialAmbient = vec4( .2, .2, .2, 1.0 );
+    materialDiffuse = vec4( 139/255, 69/255, 19/255, 1.0);
+    materialSpecular = vec4( 139/255, 69/255, 19/255, 1.0 );
+    materialShiness=50;
+    SetupLightingMaterial();
+
   	mvMatrixStack.push(modelViewMatrix);
     var t = translate(-0.1, 1.25/2, 1);
     var r1 = rotate(180, [0, 1, 0] );
@@ -516,6 +522,12 @@ function PositionLadder() {
 }
 
 function DrawCastle(length) {
+  materialAmbient = vec4( .2, .2, .2, 1.0 );
+  materialDiffuse = vec4( 191/255, 40/255, 126/255, 1.0);
+  materialSpecular = vec4( 191/255, 40/255, 126/255, 1.0 );
+  materialShiness=50;
+  SetupLightingMaterial();
+
 	mvMatrixStack.push(modelViewMatrix);
 	s=scale4(length, length, length );   // scale to the given width/height/depth
   modelViewMatrix = mult(modelViewMatrix, s);
@@ -542,4 +554,19 @@ function scale4(a, b, c) {
    	result[1][1] = b;
    	result[2][2] = c;
    	return result;
+}
+
+function SetupLightingMaterial()
+{
+    // set up lighting and material
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    specularProduct = mult(lightSpecular, materialSpecular);
+
+	// send lighting and material coefficient products to GPU
+    gl.uniform4fv( gl.getUniformLocation(program, "ambientProduct"),flatten(ambientProduct) );
+    gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct) );
+    gl.uniform4fv( gl.getUniformLocation(program, "specularProduct"),flatten(specularProduct) );
+    gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"),flatten(lightPosition) );
+    gl.uniform1f( gl.getUniformLocation(program, "shininess"),materialShininess );
 }
