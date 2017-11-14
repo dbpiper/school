@@ -112,7 +112,7 @@ function SetBackWallVertices(wallTopHeight) {
 function SetTowerVertices(centerPosition, wallWidth) {
   var width = 0.5
   var thickness = 0.5;
-  var height = 1;
+  var height = 1.25;
   var topHeight = 0.25;
 
   var centerX = centerPosition[0];
@@ -494,11 +494,25 @@ var render = function()
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
 
 
-    DrawLadder(0.25, 1.25);
-    // gl.drawArrays( gl.TRIANGLES, numVerticesCube, numVerticesCastle );
+    PositionLadder();
     DrawCastle(1);
 
     requestAnimFrame(render);
+}
+
+function PositionLadder() {
+  	mvMatrixStack.push(modelViewMatrix);
+    var t = translate(-0.1, 1.25/2, 1);
+    var r1 = rotate(180, [0, 1, 0] );
+    var r2 = rotate(30, [1, 0, 0] );
+    var r = mult(r1, r2);
+    var m = mult(t, r);
+    modelViewMatrix = mult(modelViewMatrix, m);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+    DrawLadder(0.25, 1.25);
+
+  	modelViewMatrix=mvMatrixStack.pop();
 }
 
 function DrawCastle(length) {
