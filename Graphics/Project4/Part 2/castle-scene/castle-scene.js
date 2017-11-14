@@ -523,8 +523,8 @@ function PositionLadder() {
 
 function DrawCastle(length) {
   materialAmbient = vec4( .2, .2, .2, 1.0 );
-  materialDiffuse = vec4( 191/255, 40/255, 126/255, 1.0);
-  materialSpecular = vec4( 191/255, 40/255, 126/255, 1.0 );
+  materialDiffuse = vec4( 105/255, 105/255, 105/255, 1.0);
+  materialSpecular = vec4( 105/255, 105/255, 105/255, 1.0 );
   materialShiness=50;
   SetupLightingMaterial();
 
