@@ -355,6 +355,13 @@ function render()
    	// set up view and projection
    	projectionMatrix = ortho(left*zoomFactor-translateFactorX, right*zoomFactor-translateFactorX, bottom*zoomFactor-translateFactorY, ytop*zoomFactor-translateFactorY, near, far);
    	modelViewMatrix=lookAt(eye, at, up);
+
+  console.log("left: " + (left*zoomFactor-translateFactorX));
+  console.log("right: " + (right*zoomFactor-translateFactorX));
+  console.log("bottom: " + (bottom*zoomFactor-translateFactorY));
+  console.log("top: " + (ytop*zoomFactor-translateFactorY));
+  console.log("near: " + near);
+  console.log("far: " + far);
  	gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
 	gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 

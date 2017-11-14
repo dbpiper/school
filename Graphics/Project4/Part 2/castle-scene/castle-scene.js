@@ -5,11 +5,27 @@ var eye=[1, 2, 2];
 var at = [0, 0, 0];
 var up = [0, 1, 0];
 
-var numVertices  = 0;
+var numVerticesCastle  = 0;
+var numVerticesCube = 36;
+
+var modelViewMatrix, projectionMatrix;
+modelViewMatrix = mat4();
+var modelViewMatrixLoc, projectionMatrixLoc;
 
 var pointsArray = [];
 var normalsArray = [];
+var mvMatrixStack=[];
 
+var cubeVertices = [
+        vec4( -0.5, -0.5,  0.5, 1.0 ),
+        vec4( -0.5,  0.5,  0.5, 1.0 ),
+        vec4( 0.5,  0.5,  0.5, 1.0 ),
+        vec4( 0.5, -0.5,  0.5, 1.0 ),
+        vec4( -0.5, -0.5, -0.5, 1.0 ),
+        vec4( -0.5,  0.5, -0.5, 1.0 ),
+        vec4( 0.5,  0.5, -0.5, 1.0 ),
+        vec4( 0.5, -0.5, -0.5, 1.0 )
+    ];
 // var vertices = [
 //         vec4(0, 0, 0, 1),   // A(0)
 //         vec4(1, 0, 0, 1),   // B(1)
@@ -159,7 +175,7 @@ function GenerateVertices() {
   return GenerateVerticesTower(0.5, 0.5, 1, 0.25, [-1, 0, 0]);
 }
 
-function DrawCastle() {
+function GenerateCastle() {
   DrawTowers();
   DrawWalls();
 }
@@ -180,6 +196,7 @@ function DrawWalls() {
 
 function DrawWall(vertices)  {
   quad(0, 1, 2, 3, vertices);
+  numVerticesCastle += 6;
 }
 
 // triangle has 3 points per call
@@ -187,14 +204,23 @@ function DrawWall(vertices)  {
 // pentagon has 9 points per call
 function DrawTower(vertices) {
     quad(0, 1, 2, 3, vertices); // front - ABCD
+    numVerticesCastle += 6;
     quad(4, 5, 1, 0, vertices); // right - EFBA
+    numVerticesCastle += 6;
     quad(3, 2, 7, 6, vertices); // left - DCHG
+    numVerticesCastle += 6;
     quad(6, 7, 5, 4, vertices); // back - GHFE
+    numVerticesCastle += 6;
     quad(4, 0, 3, 6, vertices); // bottom - EADG
+    numVerticesCastle += 6;
     triangle(1, 8, 2, vertices); // front of top tip - BIC
+    numVerticesCastle += 3;
     triangle(5, 8, 1, vertices); // right of the top tip - FIB
+    numVerticesCastle += 3;
     triangle(2, 8, 7, vertices); // left of the top tip - CIH
+    numVerticesCastle += 3;
     triangle(7, 8, 5, vertices); // back of the top tip - HIF
+    numVerticesCastle += 3;
 }
 
 // quad has 6 points per call
@@ -208,6 +234,74 @@ function DrawBarn()
     quad(0, 1, 6, 5); // bottom
     pentagon (5, 6, 7, 8, 9);  // FGHIJ back
     pentagon (0, 4, 3, 2, 1);  // ABCDE (clockwise) front
+}
+
+function DrawSolidCube(length)
+{
+	mvMatrixStack.push(modelViewMatrix);
+	s=scale4(length, length, length );   // scale to the given width/height/depth
+  modelViewMatrix = mult(modelViewMatrix, s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  gl.drawArrays( gl.TRIANGLES, 0, numVerticesCube);
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawLadder(width, height) {
+  // 0.02, 0.3
+	mvMatrixStack.push(modelViewMatrix);
+	t= translate(-width, 0, 0);
+  modelViewMatrix = mult(modelViewMatrix, t);
+
+  DrawLadderSides(0.02, height);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
+  mvMatrixStack.push(modelViewMatrix);
+
+  DrawLadderSides(0.02, height);
+
+  DrawLadderRungs(width, height)
+
+  modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawLadderRungs(width, height) {
+  var numRungs = height / 0.1;
+  for (var i = 1; i < numRungs; i++) {
+  	mvMatrixStack.push(modelViewMatrix);
+  	t= translate(-width/2, -height/2 + (i * 0.1), 0);
+    modelViewMatrix = mult(modelViewMatrix, t);
+
+    DrawLadderRung(0.02, width, 0.01);
+
+    modelViewMatrix=mvMatrixStack.pop();
+  }
+}
+
+function DrawLadderRung(thickness, width, length) {
+	mvMatrixStack.push(modelViewMatrix);
+	t=translate(0, 0, 0);
+	s=scale4(width, thickness, length);
+    	modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+    	gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+	DrawSolidCube(1);
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawLadderSides(thickness, height) {
+	var s, t;
+
+	mvMatrixStack.push(modelViewMatrix);
+
+	t=translate(0, 0, 0);
+	var s=scale4(thickness, height, thickness);
+        modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+        gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+	DrawSolidCube(1);
+
+	modelViewMatrix=mvMatrixStack.pop();
 }
 
 var lightPosition = vec4(1.8, 1., 2, 0.0 );
@@ -251,8 +345,6 @@ function triangle(a, b, c, vertices) {
      normalsArray.push(normal);
      pointsArray.push(vertices[c]);
      normalsArray.push(normal);
-
-     numVertices += 3;
 }
 
 // 6 points per call
@@ -277,8 +369,6 @@ function quad(a, b, c, d, vertices) {
      normalsArray.push(normal);
      pointsArray.push(vertices[d]);
      normalsArray.push(normal);
-
-     numVertices += 6;
 }
 
 // 9 points per call
@@ -331,8 +421,11 @@ window.onload = function init()
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
+    colorCube();
+
+
     // DrawBarn();
-    DrawCastle();
+    GenerateCastle();
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer );
@@ -350,11 +443,15 @@ window.onload = function init()
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
+    projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
+
     thetaLoc = gl.getUniformLocation(program, "theta");
 
     viewerPos = vec3(4.0, 4.0, 4.0 );
 
-    projection = ortho(-2, 2, -2, 2, -20, 20);
+    projectionMatrix = ortho(-2, 2, -2, 2, -20, 20);
+    // projectionMatrix = ortho(-1, 0.6, -1, 0.6, -10, 10);
 
     ambientProduct = mult(lightAmbient, materialAmbient);
     diffuseProduct = mult(lightDiffuse, materialDiffuse);
@@ -377,8 +474,8 @@ window.onload = function init()
     gl.uniform1f(gl.getUniformLocation(program,
        "shininess"),materialShininess);
 
-    gl.uniformMatrix4fv( gl.getUniformLocation(program, "projectionMatrix"),
-       false, flatten(projection));
+    gl.uniformMatrix4fv(projectionMatrixLoc,
+       false, flatten(projectionMatrix));
 
     render();
 }
@@ -389,15 +486,46 @@ var render = function()
 
     if(flag) theta[axis] += 2.0;
 
-    modelView = lookAt(eye, at, up);
-    modelView = mult(modelView, rotate(theta[xAxis], [1, 0, 0] ));
-    modelView = mult(modelView, rotate(theta[yAxis], [0, 1, 0] ));
-    modelView = mult(modelView, rotate(theta[zAxis], [0, 0, 1] ));
+    modelViewMatrix = lookAt(eye, at, up);
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta[xAxis], [1, 0, 0] ));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta[yAxis], [0, 1, 0] ));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta[zAxis], [0, 0, 1] ));
 
-    gl.uniformMatrix4fv( gl.getUniformLocation(program,
-            "modelViewMatrix"), false, flatten(modelView) );
+    gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
 
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+    DrawLadder(0.25, 1.25);
+    // gl.drawArrays( gl.TRIANGLES, numVerticesCube, numVerticesCastle );
+    DrawCastle(1);
 
     requestAnimFrame(render);
+}
+
+function DrawCastle(length) {
+	mvMatrixStack.push(modelViewMatrix);
+	s=scale4(length, length, length );   // scale to the given width/height/depth
+  modelViewMatrix = mult(modelViewMatrix, s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  gl.drawArrays( gl.TRIANGLES, numVerticesCube, numVerticesCastle );
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function colorCube()
+{
+    	quad( 1, 0, 3, 2, cubeVertices); //top
+    	quad( 2, 3, 7, 6, cubeVertices); //right
+    	quad( 3, 0, 4, 7, cubeVertices); //
+    	quad( 6, 5, 1, 2, cubeVertices);
+    	quad( 4, 5, 6, 7, cubeVertices);
+    	quad( 5, 4, 0, 1, cubeVertices);
+}
+
+function scale4(a, b, c) {
+   	var result = mat4();
+   	result[0][0] = a;
+   	result[1][1] = b;
+   	result[2][2] = c;
+   	return result;
 }
