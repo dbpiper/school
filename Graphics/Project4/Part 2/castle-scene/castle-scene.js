@@ -5,8 +5,9 @@ var eye=[1, 2, 2];
 var at = [0, 0, 0];
 var up = [0, 1, 0];
 
-var numVerticesCastle  = 0;
-var numVerticesCube = 36;
+var numPointsCastle  = 0;
+var numPointsCube = 36;
+var numPointsCylinder = 0;
 
 var modelViewMatrix, projectionMatrix;
 modelViewMatrix = mat4();
@@ -196,7 +197,7 @@ function DrawWalls() {
 
 function DrawWall(vertices)  {
   quad(0, 1, 2, 3, vertices);
-  numVerticesCastle += 6;
+  numPointsCastle += 6;
 }
 
 // triangle has 3 points per call
@@ -204,36 +205,23 @@ function DrawWall(vertices)  {
 // pentagon has 9 points per call
 function DrawTower(vertices) {
     quad(0, 1, 2, 3, vertices); // front - ABCD
-    numVerticesCastle += 6;
+    numPointsCastle += 6;
     quad(4, 5, 1, 0, vertices); // right - EFBA
-    numVerticesCastle += 6;
+    numPointsCastle += 6;
     quad(3, 2, 7, 6, vertices); // left - DCHG
-    numVerticesCastle += 6;
+    numPointsCastle += 6;
     quad(6, 7, 5, 4, vertices); // back - GHFE
-    numVerticesCastle += 6;
+    numPointsCastle += 6;
     quad(4, 0, 3, 6, vertices); // bottom - EADG
-    numVerticesCastle += 6;
+    numPointsCastle += 6;
     triangle(1, 8, 2, vertices); // front of top tip - BIC
-    numVerticesCastle += 3;
+    numPointsCastle += 3;
     triangle(5, 8, 1, vertices); // right of the top tip - FIB
-    numVerticesCastle += 3;
+    numPointsCastle += 3;
     triangle(2, 8, 7, vertices); // left of the top tip - CIH
-    numVerticesCastle += 3;
+    numPointsCastle += 3;
     triangle(7, 8, 5, vertices); // back of the top tip - HIF
-    numVerticesCastle += 3;
-}
-
-// quad has 6 points per call
-// pentagon has 9 points per call
-function DrawBarn()
-{
-    quad(0, 5, 9, 4);   // AFJE left side
-    quad(3, 4, 9, 8);   // DEJI left roof
-    quad(2, 3, 8, 7);  // right roof
-    quad(1, 2, 7, 6); // right side
-    quad(0, 1, 6, 5); // bottom
-    pentagon (5, 6, 7, 8, 9);  // FGHIJ back
-    pentagon (0, 4, 3, 2, 1);  // ABCDE (clockwise) front
+    numPointsCastle += 3;
 }
 
 function DrawSolidCube(length)
@@ -243,7 +231,7 @@ function DrawSolidCube(length)
   modelViewMatrix = mult(modelViewMatrix, s);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-  gl.drawArrays( gl.TRIANGLES, 0, numVerticesCube);
+  gl.drawArrays( gl.TRIANGLES, 0, numPointsCube);
 
 	modelViewMatrix=mvMatrixStack.pop();
 }
@@ -251,7 +239,7 @@ function DrawSolidCube(length)
 function DrawLadder(width, height) {
   // 0.02, 0.3
 	mvMatrixStack.push(modelViewMatrix);
-	t= translate(-width, 0, 0);
+	var t = translate(-width, 0, 0);
   modelViewMatrix = mult(modelViewMatrix, t);
 
   DrawLadderSides(0.02, height);
@@ -402,6 +390,115 @@ function pentagon(a, b, c, d, e) {
      normalsArray.push(normal);
 }
 
+function GenerateCylinder()
+{
+    var height=1;
+    var radius=1;
+    var num=50;
+    var alpha=(2*Math.PI)/num;
+
+    vertices = [vec4(0, 0, 0, 1)];
+    for (var i=num; i>=0; i--)
+    {
+        vertices.push(vec4(radius*Math.cos(i*alpha), 0, radius*Math.sin(i*alpha), 1));
+    }
+
+    numQuads = vertices.length;
+
+    // add the second set of points
+    for (var i=0; i < numQuads; i++)
+    {
+        vertices.push(vec4(vertices[i][0], vertices[i][1]+height, vertices[i][2], 1));
+    }
+
+    ExtrudedShape(numQuads, vertices);
+}
+
+function ExtrudedShape(numQuads, vertices)
+{
+    var basePoints=[];
+    var topPoints=[];
+
+    // create the face list
+    // add the side faces first --> N quads
+    for (var j=0; j<numQuads; j++)
+    {
+        quad(j, j+numQuads, (j+1)%numQuads+numQuads, (j+1)%numQuads, vertices);
+        numPointsCylinder += 6;
+    }
+
+    // the first N vertices come from the base
+    basePoints.push(0);
+    for (var i = numQuads - 1; i>0; i--)
+    {
+        basePoints.push(i);  // index only
+    }
+    // add the base face as the Nth face
+    numPointsCylinder += polygon(basePoints, vertices);
+
+    // the next N vertices come from the top
+    for (var i=0; i < numQuads; i++)
+    {
+        topPoints.push(i + numQuads); // index only
+    }
+    // add the top face
+    numPointsCylinder += polygon(topPoints, vertices);
+}
+
+function polygon(indices, vertices)
+{
+    // for indices=[a, b, c, d, e, f, ...]
+    var M=indices.length;
+    var normal=Newell(indices, vertices);
+
+    var numPoints = 0;
+    var prev=1;
+    var next=2;
+    // triangles:
+    // a-b-c
+    // a-c-d
+    // a-d-e
+    // ...
+    for (var i=0; i<M-2; i++)
+    {
+        pointsArray.push(vertices[indices[0]]);
+        normalsArray.push(normal);
+
+        pointsArray.push(vertices[indices[prev]]);
+        normalsArray.push(normal);
+
+        pointsArray.push(vertices[indices[next]]);
+        normalsArray.push(normal);
+
+        prev=next;
+        next=next+1;
+        numPoints += 3;
+    }
+
+    return numPoints;
+}
+
+function Newell(indices, vertices)
+{
+   var L=indices.length;
+   var x=0, y=0, z=0;
+   var index, nextIndex;
+
+   for (var i=0; i<L; i++)
+   {
+       index=indices[i];
+       nextIndex = indices[(i+1)%L];
+
+       x += (vertices[index][1] - vertices[nextIndex][1])*
+            (vertices[index][2] + vertices[nextIndex][2]);
+       y += (vertices[index][2] - vertices[nextIndex][2])*
+            (vertices[index][0] + vertices[nextIndex][0]);
+       z += (vertices[index][0] - vertices[nextIndex][0])*
+            (vertices[index][1] + vertices[nextIndex][1]);
+   }
+
+   return (normalize(vec3(x, y, z)));
+}
 
 window.onload = function init()
 {
@@ -426,6 +523,8 @@ window.onload = function init()
 
     // DrawBarn();
     GenerateCastle();
+
+    GenerateCylinder();
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer );
@@ -494,13 +593,174 @@ var render = function()
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
 
 
-    PositionLadder();
-    DrawCastle(1);
+    PositionCastle();
+    PositionBatteringRam();
+    // DrawBatteringRam();
 
     requestAnimFrame(render);
 }
 
-function PositionLadder() {
+function PositionBatteringRam() {
+    mvMatrixStack.push(modelViewMatrix);
+    var t = translate(-0.75, 0, 1);
+    var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
+    modelViewMatrix = mult(modelViewMatrix, t);
+    // modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+    DrawBatteringRam(0.3, 0.5, 0.5);
+
+  	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawBatteringRam(width, height, depth) {
+
+    materialAmbient = vec4( .2, .2, .2, 1.0 );
+    materialDiffuse = vec4( 139/255, 69/255, 19/255, 1.0);
+    materialSpecular = vec4( 139/255, 69/255, 19/255, 1.0 );
+    materialShiness=50;
+    SetupLightingMaterial();
+
+    DrawBatteringRamFrame(width, height, depth);
+
+    DrawWheel(width, 0.075);
+
+    mvMatrixStack.push(modelViewMatrix);
+    var t = translate(0, 0, -depth);
+    var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
+    modelViewMatrix = mult(modelViewMatrix, t);
+    // modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+    DrawWheel(width, 0.075);
+
+  	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawPosts(width, height, depth) {
+  var thickness = width/5;
+  var height = height;
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(-width/10, height/2, 0);
+	var s = scale4(thickness, height, thickness);
+  modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawSolidCube(1);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
+	mvMatrixStack.push(modelViewMatrix);
+
+  var t = translate(-width/10, height/2, -depth);
+	var s = scale4(thickness, height, thickness);
+  modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+	DrawSolidCube(1);
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawBatteringRamTopPost(width, height, depth) {
+  var thickness = width;
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(-width/2, height, 0);
+	var s = scale4(width, height/10, width/5);
+  var r = rotate(90, 0, 0, 1);
+  var ts = mult(t, s);
+  var m = mult(ts, t);
+  modelViewMatrix=mult(modelViewMatrix, ts);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawSolidCube(1);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
+}
+
+function DrawBatteringRamTopPosts(width, height, depth) {
+  DrawBatteringRamTopPost(width, height, depth);
+
+	mvMatrixStack.push(modelViewMatrix);
+
+  var t = translate(0, 0, -depth);
+	// var s = scale4(thickness, height, thickness);
+  modelViewMatrix=mult(modelViewMatrix, t);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawBatteringRamTopPost(width, height, depth);
+
+	modelViewMatrix=mvMatrixStack.pop();
+
+}
+
+function DrawBatteringRamFrame(width, height, depth) {
+  DrawPosts(width, height, depth);
+  DrawBatteringRamTopPosts(width, height, depth);
+
+  mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(-width + width/5, 0, 0);
+	// var s = scale4(thickness, height, thickness);
+  modelViewMatrix=mult(modelViewMatrix, t);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawPosts(width, height, depth);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
+}
+
+function PositionCastle() {
+  	mvMatrixStack.push(modelViewMatrix);
+    var t = translate(-0.1, 0, -0.8);
+    var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
+    modelViewMatrix = mult(modelViewMatrix, t);
+    // modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+    PositionLadder(1);
+    DrawCastle(0.75);
+
+  	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawWheel(length, scale) {
+  materialAmbient = vec4( .2, .2, .2, 1.0 );
+  materialDiffuse = vec4( 139/255, 69/255, 19/255, 1.0);
+  materialSpecular = vec4( 139/255, 69/255, 19/255, 1.0 );
+  materialShiness=50;
+  SetupLightingMaterial();
+
+	mvMatrixStack.push(modelViewMatrix);
+	var s = scale4(scale, length, scale);   // scale to the given width/height/depth
+  var r1 = rotate(90, 1, 0, 0);
+  var r2 = rotate(90, 0, 0, 1);
+  var r = mult(r1, r2);
+  var m = mult(r, s);
+  modelViewMatrix = mult(modelViewMatrix, m);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawCylinder(1);
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawCylinder(length) {
+	mvMatrixStack.push(modelViewMatrix);
+	s=scale4(length, length, length );   // scale to the given width/height/depth
+  modelViewMatrix = mult(modelViewMatrix, s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  gl.drawArrays( gl.TRIANGLES, numPointsCube + numPointsCastle, numPointsCylinder );
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function PositionLadder(scale) {
     materialAmbient = vec4( .2, .2, .2, 1.0 );
     materialDiffuse = vec4( 139/255, 69/255, 19/255, 1.0);
     materialSpecular = vec4( 139/255, 69/255, 19/255, 1.0 );
@@ -508,15 +768,17 @@ function PositionLadder() {
     SetupLightingMaterial();
 
   	mvMatrixStack.push(modelViewMatrix);
-    var t = translate(-0.1, 1.25/2, 1);
+    var t = translate(0.1, 1.25/2, 1);
     var r1 = rotate(180, [0, 1, 0] );
     var r2 = rotate(30, [1, 0, 0] );
     var r = mult(r1, r2);
     var m = mult(t, r);
+    var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
     modelViewMatrix = mult(modelViewMatrix, m);
+    modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-    DrawLadder(0.25, 1.25);
+    DrawLadder(0.15, 1);
 
   	modelViewMatrix=mvMatrixStack.pop();
 }
@@ -533,7 +795,7 @@ function DrawCastle(length) {
   modelViewMatrix = mult(modelViewMatrix, s);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-  gl.drawArrays( gl.TRIANGLES, numVerticesCube, numVerticesCastle );
+  gl.drawArrays( gl.TRIANGLES, numPointsCube, numPointsCastle );
 
 	modelViewMatrix=mvMatrixStack.pop();
 }
