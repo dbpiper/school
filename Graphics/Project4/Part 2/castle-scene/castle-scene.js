@@ -622,8 +622,9 @@ function DrawBatteringRam(width, height, depth) {
     SetupLightingMaterial();
 
     DrawBatteringRamFrame(width, height, depth);
+    DrawRam(width, height, depth);
 
-    DrawWheel(width, 0.075);
+    DrawWheel(width, depth/7);
 
     mvMatrixStack.push(modelViewMatrix);
     var t = translate(0, 0, -depth);
@@ -632,7 +633,7 @@ function DrawBatteringRam(width, height, depth) {
     // modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-    DrawWheel(width, 0.075);
+    DrawWheel(width, depth/7);
 
   	modelViewMatrix=mvMatrixStack.pop();
 }
@@ -695,6 +696,23 @@ function DrawBatteringRamConnectionPost(width, height, depth) {
   DrawSolidCube(1);
 
   modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawRam(width, height, depth) {
+	mvMatrixStack.push(modelViewMatrix);
+  var t = translate(depth/2, height/2, -width/2);
+	var s = scale4(2, 1, 1);   // scale to the given width/height/depth
+  // var r1 = rotate(90, 1, 0, 0);
+  // var r2 = rotate(90, 0, 0, 1);
+  var r = rotate(90, 0, 1, 0);
+  var rs = mult(r, s);
+  var m = mult(rs, t);
+  modelViewMatrix = mult(modelViewMatrix, m);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawWheel(width, depth/7);
+
+	modelViewMatrix=mvMatrixStack.pop();
 }
 
 function DrawBatteringRamTopPosts(width, height, depth) {
