@@ -681,6 +681,22 @@ function DrawBatteringRamTopPost(width, height, depth) {
 
 }
 
+function DrawBatteringRamConnectionPost(width, height, depth) {
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(-width/2, height, -depth/2);
+	var s = scale4(width/5, height/10, depth);
+  var r = rotate(90, 0, 0, 1);
+  var ts = mult(t, s);
+  var m = mult(ts, t);
+  modelViewMatrix=mult(modelViewMatrix, ts);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawSolidCube(1);
+
+  modelViewMatrix=mvMatrixStack.pop();
+}
+
 function DrawBatteringRamTopPosts(width, height, depth) {
   DrawBatteringRamTopPost(width, height, depth);
 
@@ -700,6 +716,7 @@ function DrawBatteringRamTopPosts(width, height, depth) {
 function DrawBatteringRamFrame(width, height, depth) {
   DrawPosts(width, height, depth);
   DrawBatteringRamTopPosts(width, height, depth);
+  DrawBatteringRamConnectionPost(width, height, depth);
 
   mvMatrixStack.push(modelViewMatrix);
 
