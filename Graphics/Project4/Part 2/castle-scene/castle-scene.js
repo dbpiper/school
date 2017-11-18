@@ -8,6 +8,7 @@ var up = [0, 1, 0];
 var numPointsCastle  = 0;
 var numPointsCube = 36;
 var numPointsCylinder = 0;
+var numPointsCone = 0;
 
 var modelViewMatrix, projectionMatrix;
 modelViewMatrix = mat4();
@@ -318,6 +319,58 @@ var thetaLoc;
 
 var flag = false;
 
+// a, b, c, and d are all vec4 type
+function triangleAbsolute(a, b, c)
+{
+	/*
+    var t1 = subtract(b, a);
+   	var t2 = subtract(c, a);
+   	var normal = cross(t1, t2);
+   	var normal = vec4(normal);
+   	normal = normalize(normal);
+   	*/
+	var points=[a, b, c];
+   	var normal = NewellAbsolute(points);
+
+    // triangle abc
+   	pointsArray.push(a);
+   	normalsArray.push(normal);
+   	pointsArray.push(b);
+   	normalsArray.push(normal);
+   	pointsArray.push(c);
+   	normalsArray.push(normal);
+}
+
+// a, b, c, and d are all vec4 type
+function quadAbsolute(a, b, c, d)
+{
+    /*
+    var t1 = subtract(b, a);
+   	var t2 = subtract(c, a);
+   	var normal = cross(t1, t2);
+   	var normal = vec4(normal);
+   	normal = normalize(normal);
+   	*/
+
+	var points=[a, b, c, d];
+   	var normal = NewellAbsolute(points);
+
+    // triangle abc
+   	pointsArray.push(a);
+   	normalsArray.push(normal);
+   	pointsArray.push(b);
+   	normalsArray.push(normal);
+   	pointsArray.push(c);
+   	normalsArray.push(normal);
+
+    // triangle acd
+   	pointsArray.push(a);
+   	normalsArray.push(normal);
+   	pointsArray.push(c);
+   	normalsArray.push(normal);
+   	pointsArray.push(d);
+   	normalsArray.push(normal);
+}
 // 3 points per call
 function triangle(a, b, c, vertices) {
 
@@ -388,6 +441,50 @@ function pentagon(a, b, c, d, e) {
      normalsArray.push(normal);
      pointsArray.push(vertices[e]);
      normalsArray.push(normal);
+}
+
+function GenerateCone(radius, height, stacks, slices)
+{
+    var hypotenuse=Math.sqrt(height*height + radius*radius);
+	var cosTheta = radius/hypotenuse;
+	var sinTheta = height/hypotenuse;
+
+    // starting out with a single line in xy-plane
+	var line=[];
+	for (var p=0; p<=stacks; p++)  {
+	    line.push(vec4(p*hypotenuse/stacks*cosTheta, p*hypotenuse/stacks*sinTheta, 0, 1));
+    }
+
+    prev = line;
+    // rotate around y axis
+    var m=rotate(360/slices, 0, 1, 0);
+    for (var i=1; i<=slices; i++) {
+        var curr=[]
+
+        // compute the new set of points with one rotation
+        for (var j=0; j<=stacks; j++) {
+            var v4 = multiply(m, prev[j]);
+            curr.push( v4 );
+        }
+
+        // triangle bottom of the cone
+        triangleAbsolute(prev[0], curr[1], prev[1]);
+        numPointsCone += 3;
+
+        // create the triangles for this slice
+        for (var j=1; j<stacks; j++) {
+            prev1 = prev[j];
+            prev2 = prev[j+1];
+
+            curr1 = curr[j];
+            curr2 = curr[j+1];
+
+            quadAbsolute(prev1, curr1, curr2, prev2);
+            numPointsCone += 6;
+        }
+
+        prev = curr;
+    }
 }
 
 function GenerateCylinder()
@@ -525,6 +622,7 @@ window.onload = function init()
     GenerateCastle();
 
     GenerateCylinder();
+    GenerateCone(0.4, 1, 8, 12);  // size: ((stacks-1)*6+3)*slices=540,
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer );
@@ -596,7 +694,6 @@ var render = function()
     PositionCastle();
     PositionBatteringRam();
     PositionCatapult();
-    // DrawBatteringRam();
 
     requestAnimFrame(render);
 }
@@ -620,6 +717,8 @@ function DrawCatapult(width, height, depth) {
     materialSpecular = vec4( 139/255, 69/255, 19/255, 1.0 );
     materialShiness=50;
     SetupLightingMaterial();
+
+    mvMatrixStack.push(modelViewMatrix);
 
     DrawCatapultBase(width, height, depth);
     DrawCatapultMid(width, height, depth);
@@ -646,6 +745,19 @@ function DrawCatapultTop(width, height, depth) {
 
   modelViewMatrix=mvMatrixStack.pop();
 
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(width/2.5, height-thickness/2, -depth/2);
+  var t2 = translate(0, -height/2 + thickness, depth/1.3);
+  var m = mult(t2, t);
+  // modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+  modelViewMatrix = mult(modelViewMatrix, m);
+
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawCone(height/2);
+
+  modelViewMatrix=mvMatrixStack.pop();
 }
 
 function DrawCatapultMid(width, height, depth) {
@@ -897,6 +1009,18 @@ function DrawWheel(length, scale) {
 	modelViewMatrix=mvMatrixStack.pop();
 }
 
+function DrawCone(scale) {
+	mvMatrixStack.push(modelViewMatrix);
+	s=scale4(scale, scale, scale);   // scale to the given width/height/depth
+  modelViewMatrix = mult(modelViewMatrix, s);
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  gl.drawArrays( gl.TRIANGLES, numPointsCube + numPointsCastle + numPointsCylinder,
+    numPointsCone );
+
+	modelViewMatrix=mvMatrixStack.pop();
+}
+
 function DrawCylinder(length) {
 	mvMatrixStack.push(modelViewMatrix);
 	s=scale4(length, length, length );   // scale to the given width/height/depth
@@ -979,4 +1103,37 @@ function SetupLightingMaterial()
     gl.uniform4fv( gl.getUniformLocation(program, "specularProduct"),flatten(specularProduct) );
     gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"),flatten(lightPosition) );
     gl.uniform1f( gl.getUniformLocation(program, "shininess"),materialShininess );
+}
+
+// a 4x4 matrix multiple by a vec4
+function multiply(m, v)
+{
+    var vv=vec4(
+     m[0][0]*v[0] + m[0][1]*v[1] + m[0][2]*v[2]+ m[0][3]*v[3],
+     m[1][0]*v[0] + m[1][1]*v[1] + m[1][2]*v[2]+ m[1][3]*v[3],
+     m[2][0]*v[0] + m[2][1]*v[1] + m[2][2]*v[2]+ m[2][3]*v[3],
+     m[3][0]*v[0] + m[3][1]*v[1] + m[3][2]*v[2]+ m[3][3]*v[3]);
+    return vv;
+}
+
+function NewellAbsolute(vertices)
+{
+   var L=vertices.length;
+   var x=0, y=0, z=0;
+   var index, nextIndex;
+
+   for (var i=0; i<L; i++)
+   {
+       index=i;
+       nextIndex = (i+1)%L;
+
+       x += (vertices[index][1] - vertices[nextIndex][1])*
+            (vertices[index][2] + vertices[nextIndex][2]);
+       y += (vertices[index][2] - vertices[nextIndex][2])*
+            (vertices[index][0] + vertices[nextIndex][0]);
+       z += (vertices[index][0] - vertices[nextIndex][0])*
+            (vertices[index][1] + vertices[nextIndex][1]);
+   }
+
+   return (normalize(vec3(x, y, z)));
 }
