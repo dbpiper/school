@@ -628,6 +628,26 @@ function DrawCatapult(width, height, depth) {
   	modelViewMatrix=mvMatrixStack.pop();
 }
 
+function DrawCatapultTop(width, height, depth) {
+  var thickness = width/5;
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(width/2.5, height-thickness/2, -depth/2);
+	var s = scale4(thickness, height/5, depth/1.5);
+  var m = mult(t, s);
+  var t2 = translate(0, 0, depth/4);
+  var m = mult(t2, m);
+  // modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+  modelViewMatrix = mult(modelViewMatrix, m);
+
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawSolidCube(1);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
+}
+
 function DrawCatapultMid(width, height, depth) {
   var thickness = width/5;
 	mvMatrixStack.push(modelViewMatrix);
@@ -896,9 +916,9 @@ function PositionLadder(scale) {
     SetupLightingMaterial();
 
   	mvMatrixStack.push(modelViewMatrix);
-    var t = translate(0.1, 1.25/2, 1);
+    var t = translate(-0.1, 1.25/2, 0.8);
     var r1 = rotate(180, [0, 1, 0] );
-    var r2 = rotate(30, [1, 0, 0] );
+    var r2 = rotate(60, [1, 0, 0] );
     var r = mult(r1, r2);
     var m = mult(t, r);
     var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
