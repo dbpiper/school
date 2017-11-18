@@ -622,8 +622,28 @@ function DrawCatapult(width, height, depth) {
     SetupLightingMaterial();
 
     DrawCatapultBase(width, height, depth);
+    DrawCatapultMid(width, height, depth);
+    DrawCatapultTop(width, height, depth);
 
   	modelViewMatrix=mvMatrixStack.pop();
+}
+
+function DrawCatapultMid(width, height, depth) {
+  var thickness = width/5;
+	mvMatrixStack.push(modelViewMatrix);
+
+	var t = translate(width/2.5, height/2, -depth/2);
+	var s = scale4(thickness, height, thickness);
+  var m = mult(t, s);
+  // modelViewMatrix=mult(mult(modelViewMatrix, t), s);
+  modelViewMatrix = mult(modelViewMatrix, m);
+
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
+  DrawSolidCube(1);
+
+  modelViewMatrix=mvMatrixStack.pop();
+
 }
 
 function DrawCatapultBase(width, height, depth) {
@@ -634,7 +654,7 @@ function DrawCatapultBase(width, height, depth) {
 
 	var t = translate(0, 0, 0);
 	var s = scale4(thickness, height, depth-thickness);
-  var m = mult(s, t);
+  var m = mult(t, s);
   // modelViewMatrix=mult(mult(modelViewMatrix, t), s);
   modelViewMatrix = mult(modelViewMatrix, m);
 
