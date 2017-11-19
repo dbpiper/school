@@ -1,6 +1,23 @@
 var canvas;
 var gl;
 
+var animate = false;
+
+var animateMoveBatteringRam = {
+  moveForward: 0,
+  numSteps: 100,
+  currentStep: 0,
+};
+
+var animateRam = {
+  times: 0,
+  moveAmount: 0,
+  numSteps: 100,
+  currentStep: 0,
+  moveForward: false,
+};
+
+
 var eye=[1, 2, 2];
 var at = [0, 0, 0];
 var up = [0, 1, 0];
@@ -609,6 +626,15 @@ window.onload = function init()
 
     gl.enable(gl.DEPTH_TEST);
 
+    window.onkeydown = function(event) {
+        var key = String.fromCharCode(event.keyCode);
+        switch (key) {
+          case 'a':
+          case 'A':
+            animate = !animate;
+            break;
+        }
+    }
     //
     //  Load shaders and initialize attribute buffers
     //
@@ -692,7 +718,34 @@ var render = function()
 
 
     PositionCastle();
-    PositionBatteringRam();
+    if (animate &&
+      animateMoveBatteringRam.currentStep < animateMoveBatteringRam.numSteps) {
+      var stepSize = 0.5/100;
+      animateMoveBatteringRam.moveForward += stepSize;
+      animateMoveBatteringRam.currentStep++;
+      // time to move ram
+    } else if (animate &&
+      animateMoveBatteringRam.currentStep >= animateMoveBatteringRam.numSteps) {
+      // swing back
+      if (animateRam.currentStep >= animateRam.numSteps) {
+        animateRam.currentStep = 0;
+        animateRam.moveForward = !animateRam.moveForward;
+        animateRam.times++;
+      }
+      var stepSize = 0.5/100;
+      // move back for initial swing
+      if (animateRam.times == 0) {
+        stepSize = 0.25/100;
+      }
+      if (animateRam.moveForward) {
+        animateRam.moveAmount -= stepSize;
+      } else {
+        animateRam.moveAmount += stepSize;
+      }
+      animateRam.currentStep++;
+    }
+    PositionBatteringRam(animateMoveBatteringRam.moveForward,
+      animateRam.moveAmount);
     PositionCatapult();
 
     requestAnimFrame(render);
@@ -825,20 +878,20 @@ function DrawCatapultBase(width, height, depth) {
   modelViewMatrix=mvMatrixStack.pop();
 }
 
-function PositionBatteringRam() {
+function PositionBatteringRam(moveForward, ramMoveAmount) {
     mvMatrixStack.push(modelViewMatrix);
-    var t = translate(-0.75, 0, 1);
+    var t = translate(-0.75, 0, 1 - moveForward);
     // var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
     modelViewMatrix = mult(modelViewMatrix, t);
     // modelViewMatrix = mult(modelViewMatrix, s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-    DrawBatteringRam(0.3, 0.5, 0.5);
+    DrawBatteringRam(0.3, 0.5, 0.5, ramMoveAmount);
 
   	modelViewMatrix=mvMatrixStack.pop();
 }
 
-function DrawBatteringRam(width, height, depth) {
+function DrawBatteringRam(width, height, depth, ramMoveAmount) {
 
     materialAmbient = vec4( .2, .2, .2, 1.0 );
     materialDiffuse = vec4( 139/255, 69/255, 19/255, 1.0);
@@ -847,7 +900,17 @@ function DrawBatteringRam(width, height, depth) {
     SetupLightingMaterial();
 
     DrawBatteringRamFrame(width, height, depth);
+
+    mvMatrixStack.push(modelViewMatrix);
+    var t = translate(0, 0, ramMoveAmount);
+    // var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
+    modelViewMatrix = mult(modelViewMatrix, t);
+    // modelViewMatrix = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+
     DrawRam(width, height, depth);
+
+  	modelViewMatrix=mvMatrixStack.pop();
 
     DrawWheel(width, depth/7);
 
