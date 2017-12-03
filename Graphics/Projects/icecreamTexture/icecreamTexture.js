@@ -60,16 +60,16 @@ var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
 var mvMatrixStack=[];
 
-window.onload = function init() 
+window.onload = function init()
 {
     canvas = document.getElementById( "gl-canvas" );
-    
+
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
-    
+
     gl.enable(gl.DEPTH_TEST);
 
     //  Load shaders and initialize attribute buffers
@@ -102,7 +102,7 @@ function SendData()
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer);
     gl.bufferData( gl.ARRAY_BUFFER, flatten(normalsArray), gl.STATIC_DRAW );
-    
+
     var vNormal = gl.getAttribLocation( program, "vNormal" );
     gl.vertexAttribPointer( vNormal, 3, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vNormal);
@@ -110,7 +110,7 @@ function SendData()
     var vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(pointsArray), gl.STATIC_DRAW);
-    
+
     var vPosition = gl.getAttribLocation( program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
@@ -123,7 +123,7 @@ function SendData()
     var vTexCoord = gl.getAttribLocation( program, "vTexCoord" );
     gl.vertexAttribPointer( vTexCoord, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vTexCoord );
-}  
+}
 
 function SetupLightingMaterial()
 {
@@ -135,7 +135,7 @@ function SetupLightingMaterial()
 	// send lighting and material coefficient products to GPU
     gl.uniform4fv( gl.getUniformLocation(program, "ambientProduct"),flatten(ambientProduct) );
     gl.uniform4fv( gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct) );
-    gl.uniform4fv( gl.getUniformLocation(program, "specularProduct"),flatten(specularProduct) );	
+    gl.uniform4fv( gl.getUniformLocation(program, "specularProduct"),flatten(specularProduct) );
     gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"),flatten(lightPosition) );
     gl.uniform1f( gl.getUniformLocation(program, "shininess"),materialShininess );
 }
@@ -181,11 +181,11 @@ function GeneratePrimitives()
 	stacks=16;// radius(0.8), slices (12), stack(8)
 	radius=0.8;
 	// size: ((stacks-2)*6+2*3)*slices=504, points: 36 - 539
-    GenerateSphere(radius, slices, stacks);    
-    
+    GenerateSphere(radius, slices, stacks);
+
 	radius=0.4;
 	height=1;
-    GenerateCone(radius, height);  // size: ((stacks-1)*6+3)*slices=540, 
+    GenerateCone(radius, height);  // size: ((stacks-1)*6+3)*slices=540,
 }
 
 function GenerateCube()
@@ -209,7 +209,7 @@ function GenerateCube()
     quad( vertices[5], vertices[4], vertices[0], vertices[1] );
 }
 
-function GenerateSphere(radius, slices, stacks) 
+function GenerateSphere(radius, slices, stacks)
 {
     var sliceInc = 2*Math.PI/slices;
     var stackInc = Math.PI/stacks;
@@ -252,7 +252,7 @@ function GenerateSphere(radius, slices, stacks)
 
         // bottom of the sphere j=stacks case
         triangle(prev[stacks], prev[stacks-1], curr[stacks-1]);
-        
+
         prev = curr;
     }
 }
@@ -304,7 +304,7 @@ function GenerateCone(radius, height)
 
 // a, b, c, and d are all vec4 type
 // special texture
-function triangleS(a, b, c) 
+function triangleS(a, b, c)
 {
     // triangle abc
    	pointsArray.push(a);
@@ -319,7 +319,7 @@ function triangleS(a, b, c)
 
 // a, b, c, and d are all vec4 type
 // regular texture
-function triangle(a, b, c) 
+function triangle(a, b, c)
 {
     var t1 = subtract(b, a);
    	var t2 = subtract(c, b);
@@ -342,12 +342,12 @@ function triangle(a, b, c)
 }
 
 // a, b, c, and d are all vec4 type
-function quadS(a, b, c, d) 
+function quadS(a, b, c, d)
 {
     // triangle abc
    	pointsArray.push(a);
    	normalsArray.push(normalize(a));
-    
+
    	pointsArray.push(b);
    	normalsArray.push(normalize(b));
    	pointsArray.push(c);
@@ -364,7 +364,7 @@ function quadS(a, b, c, d)
 
 // a, b, c, and d are all vec4 type
 // regular texture
-function quad(a, b, c, d) 
+function quad(a, b, c, d)
 {
     var t1 = subtract(b, a);
    	var t2 = subtract(c, a);
@@ -457,7 +457,7 @@ function EstablishTextures()
     // Tell the broswer to load an image
     texture2.image.src='icecream-waffle.jpg';
 
-	
+
     // register the event handler to be called on loading an image
     texture2.image.onload = function() {  loadTexture(texture2, gl.TEXTURE1); }
 }
@@ -500,7 +500,7 @@ function DrawIcecream()
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
     // draw cone
-    gl.drawArrays(gl.TRIANGLES, 36+2160, 540) 
+    gl.drawArrays(gl.TRIANGLES, 36+2160, 540)
 	modelViewMatrix=mvMatrixStack.pop();
 }
 
@@ -537,7 +537,7 @@ function render()
 {
 	var s, t, r;
 
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
    	// set up projection and modelview
    	projectionMatrix = ortho(left*zoomFactor-translateFactorX, right*zoomFactor-translateFactorX, bottom*zoomFactor-translateFactorY, ytop*zoomFactor-translateFactorY, near, far);
@@ -547,7 +547,7 @@ function render()
               Radius*Math.sin(theta*Math.PI/180.0),
               Radius*Math.cos(theta*Math.PI/180.0)*Math.sin(phi*Math.PI/180.0));
    	modelViewMatrix=lookAt(eye, at, up);
-	
+
 	var r1 = rotate(xrot, 1, 0, 0);
 	var r2 = rotate(yrot, 0, 0, 1);
     modelViewMatrix = mult(mult(modelViewMatrix, r1), r2);
@@ -559,7 +559,7 @@ function render()
 	s=scale4(0.75, 0.75, 0.75);
     modelViewMatrix=mult(mult(modelViewMatrix, t), s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-	DrawIcecream();   
+	DrawIcecream();
 	modelViewMatrix=mvMatrixStack.pop();
 
     requestAnimFrame(render);
