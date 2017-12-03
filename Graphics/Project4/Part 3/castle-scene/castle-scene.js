@@ -1262,9 +1262,10 @@ function PositionLadder(scale) {
     SetupLightingMaterial();
 
   	mvMatrixStack.push(modelViewMatrix);
-    var t = translate(-0.1, 1.25/2, 0.8);
+    //var t = translate(-0.1, 1.25/2, 0.8);
+    var t = translate(0, 1/2, 0.6);
     var r1 = rotate(180, [0, 1, 0] );
-    var r2 = rotate(60, [1, 0, 0] );
+    var r2 = rotate(0, [1, 0, 0] );
     var r = mult(r1, r2);
     var m = mult(t, r);
     var s = scale4(scale, scale, scale );   // scale to the given width/height/depth
