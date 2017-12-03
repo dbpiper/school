@@ -676,6 +676,8 @@ window.onload = function init()
           case 'a':
           case 'A':
             animate = !animate;
+            var audio = new Audio('wheels.mp3');
+            audio.play();
             break;
         }
     }
