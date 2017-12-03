@@ -7,6 +7,8 @@ var zoom = 2;
 var lr = 120;
 var ud = 30;
 
+var wheelsSound = new Audio('wheels.mp3');
+
 // texture coordinates
 var texCoord = [
     vec2(0, .2),
@@ -677,14 +679,38 @@ window.onload = function init()
 
     window.onkeydown = function(event) {
         var key = String.fromCharCode(event.keyCode);
-        console.log(key);
         switch (key) { // only works for basic characters
           case 'a':
           case 'A':
+            if (animate) {
+              wheelsSound.pause();
+            } else {
+              wheelsSound.play();
+            }
             animate = !animate;
-            var audio = new Audio('wheels.mp3');
-            audio.play();
             break;
+
+          case 'b':
+          case 'B':
+            wheelsSound.pause();
+            wheelsSound.currentTime = 0;
+            lr = 120;
+            ud = 30;
+            animate = false;
+            
+            animateMoveBatteringRam = {
+              moveForward: 0,
+              numSteps: 100,
+              currentStep: 0,
+            };
+
+            animateRam = {
+              times: 0,
+              moveAmount: 0,
+              numSteps: 100,
+              currentStep: 0,
+              moveForward: false,
+            };
         }
         switch (event.keyCode) {
             case 37: // left arrow
@@ -796,7 +822,6 @@ var render = function()
           r * Math.sin(ud/180 * Math.PI),
           r * Math.cos(ud/180 * Math.PI) * Math.sin(lr/180 * Math.PI)
     );
-    console.log(eye);
     modelViewMatrix = lookAt(eye, at, up);
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[xAxis], [1, 0, 0] ));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[yAxis], [0, 1, 0] ));
