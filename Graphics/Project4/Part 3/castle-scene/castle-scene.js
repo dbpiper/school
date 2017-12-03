@@ -2,6 +2,11 @@ var canvas;
 var gl;
 var texCoordsArray = [];
 
+var r = 20;
+var zoom = 2;
+var lr = 120;
+var ud = 30;
+
 // texture coordinates
 var texCoord = [
     vec2(0, .2),
@@ -672,13 +677,30 @@ window.onload = function init()
 
     window.onkeydown = function(event) {
         var key = String.fromCharCode(event.keyCode);
-        switch (key) {
+        console.log(key);
+        switch (key) { // only works for basic characters
           case 'a':
           case 'A':
             animate = !animate;
             var audio = new Audio('wheels.mp3');
             audio.play();
             break;
+        }
+        switch (event.keyCode) {
+            case 37: // left arrow
+                lr += 18;
+                break;
+            case 38: // up arrow
+                if (ud < 81)
+                    ud += 9;
+                break;
+            case 39: // right arrow
+                lr -= 18;
+                break;
+            case 40: // down arrow
+                if (ud > 9)
+                    ud -= 9;
+                break;
         }
     }
     //
@@ -730,7 +752,8 @@ window.onload = function init()
 
     viewerPos = vec3(4.0, 4.0, 4.0 );
 
-    projectionMatrix = ortho(-2, 2, -2, 2, -20, 20);
+    //projectionMatrix = ortho(-2, 2, -2, 2, -20, 20);
+    projectionMatrix = ortho(-zoom, zoom, -zoom, zoom, -1000, 1000);
     // projectionMatrix = ortho(-1, 0.6, -1, 0.6, -10, 10);
 
     ambientProduct = mult(lightAmbient, materialAmbient);
@@ -768,6 +791,12 @@ var render = function()
 
     if(flag) theta[axis] += 2.0;
 
+    var eye = vec3(
+          r * Math.cos(ud/180 * Math.PI) * Math.cos(lr/180 * Math.PI),
+          r * Math.sin(ud/180 * Math.PI),
+          r * Math.cos(ud/180 * Math.PI) * Math.sin(lr/180 * Math.PI)
+    );
+    console.log(eye);
     modelViewMatrix = lookAt(eye, at, up);
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[xAxis], [1, 0, 0] ));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[yAxis], [0, 1, 0] ));
