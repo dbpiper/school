@@ -3,24 +3,76 @@
 <head>
 
     <style>
-    <!-- .wrap { -->
-        <!-- border: 5px solid red; -->
-        <!-- width:  400px; -->
-        <!-- height: 400px; -->
-        <!-- display: grid; -->
-        <!-- grid-template-areas: "head head" -->
-                             <!-- "nav  main" -->
-                             <!-- "nav  foot"; -->
-        <!-- grid-template-rows: 50px 1fr 30px; -->
-        <!-- grid-template-columns: 150px 1fr; -->
-        <!-- grid-gap: 4px;   /* grid-row-gap  grid-column-gap */ -->
-    <!-- } -->
+    /* original */
+    /* .wrap {
+        border: 5px solid red;
+        width:  400px;
+        height: 400px;
+        display: grid;
+        grid-template-areas: "head head"
+                             "nav  main"
+                             "nav  foot";
+        grid-template-rows: 50px 1fr 30px;
+        grid-template-columns: 150px 1fr;
+        grid-gap: 4px;
+    } */
+
+    @media screen and (max-width: 749px) {
+      .wrap {
+          border: 5px solid purple;
+          width:  395px;
+          display: grid;
+          grid-template-areas: "title"
+                               "header"
+                               "main"
+                               "aside"
+                               "footer";
+          grid-template-rows: 35px 75px 75px 75px 75px;
+          grid-template-columns: 395px;
+          grid-gap: 4px;
+      }
+    }
+
+    @media screen and (min-width: 750px) and (max-width: 1000px) {
+      .wrap {
+          border: 5px solid purple;
+          width:  475px;
+          display: grid;
+          grid-template-areas: "title footer"
+                               "main header"
+                               "main aside";
+          grid-template-rows: 35px 75px 75px;
+          grid-template-columns: 235.5px 235.5px;
+          grid-gap: 4px;
+      }
+    }
+
+    @media screen and (min-width: 1001px) {
+      .wrap {
+          border: 5px solid purple;
+          width:  950px;
+          display: grid;
+          grid-template-areas: "title title"
+                               "header header"
+                               "aside main"
+                               "aside main"
+                               "footer footer";
+          grid-template-rows: 35px 75px 75px 75px 75px;
+          grid-template-columns: 473px 473px;
+          grid-gap: 4px;
+      }
+    }
+
+    .text {
+      font-size: 18pt;
+    }
 
     .title{
-        background: lightgreen;
+        background: green;
         /* margin: 2px; */
         /* height: 50px; */
         grid-area: title;
+        font-weight: bold;
     }
 
     .header {
@@ -29,21 +81,21 @@
         /* height: 50px; */
         grid-area: header;
     }
-	
+
     .main {
         /* margin: 2px; */
         /* height: 50px; */
         background: antiquewhite;
         grid-area: main;
     }
-    
+
 	.aside {
         /* margin: 2px; */
         /* height: 50px; */
         background: red;
         grid-area: aside;
     }
-	
+
 	.footer {
 		background: yellow;
 		grid-area: footer;
@@ -54,27 +106,25 @@
 
 <body>
 
-    <h3>RMB: grid ; use grid-template-areas and grid-area ;
-        also replace margins with grid-gap (does not put whitespace on all sides)</h3>
-    w 400px  h 400px
+    <h3>RMB: p1 with MQs for three sizes (-750 750+ 1000+)</h3>
     <div class="wrap">
-        <div class="title">
-            Title  
+        <div class="title text">
+            Title
         </div>
 
-        <div class="header">
+        <div class="header text">
             Header
         </div>
 
-        <div class="main">
-            Main Content
+        <div class="main text">
+            Main content
         </div>
 
-		<aside class="aside">
-			Aside
-		</aside>
-		
-        <footer class="footer">
+    		<aside class="aside text">
+    			Aside
+    		</aside>
+
+        <footer class="footer text">
 			Footer
 		</footer>
     </div>
