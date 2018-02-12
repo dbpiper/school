@@ -1,0 +1,13 @@
+
+chrome shows size with dev tools turned on
+
+demos:
+
+    d01
+        float left/right (swap and chg/del width of container)
+
+    d02
+        clear used for footer
+
+
+RMB05 from author also has lots of pre-flex use of float and clear etc

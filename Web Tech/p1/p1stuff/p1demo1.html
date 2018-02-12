@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        #header-content {
+            background-color: orange;
+        }
+
+        #main-content {
+            background-color: antiquewhite;
+        }
+
+        #aside-content {
+            background-color: red;
+        }
+
+        #footer-content {
+            background-color: yellow;
+        }
+
+        @media screen and (min-width: 1000px) {
+
+            .styled-element {
+                margin: 2px;
+                border: 2px black solid;
+                pad:    2px;
+            }
+
+        }
+    </style>
+
+</head>
+<body>
+
+    <h1>P1DEMO1</h1>
+
+    <div id="container">
+
+        <h3>An h3 Heading</h3>
+
+        <header id="header-content" class="styled-element">
+            Header
+        </header>
+
+        <main id="main-content" class="styled-element">
+            Main content
+        </main>
+
+        <aside id="aside-content" class="styled-element">
+            Aside
+        </aside>
+
+        <footer id="footer-content" class="styled-element">
+            Footer
+        </footer>
+
+    </div>
+
+</body>
+</html>

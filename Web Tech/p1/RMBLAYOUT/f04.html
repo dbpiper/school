@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+    .wrap {
+        border: 5px solid red;
+        width:  400px;
+        height: 400px;
+        display: flex;
+        flex-wrap: wrap;  /* default is nowrap */
+    }
+
+    .d1 {
+        background: lightblue;
+        margin: 2px;
+        height: 50px;
+        width: 150px;
+    }
+
+    .d2 {
+        background: lightgreen;
+        margin: 2px;
+        height: 50px;
+        width: 150px;
+    }
+    .d3 {
+        margin: 2px;
+        height: 50px;
+        background: yellow;
+        width: 150px;
+    }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>RMB: flexbox ; no flex:N specified but total width in pixels makes all 3 too wide ;
+             instead, use flex-wrap to simply build a row until it is too wide, then
+             wrap to the next row using flex-wrap:wrap</h3>
+    w 400px  h 400px
+    <div class=wrap>
+        <div class=d1>
+            d1  w 150px
+        </div>
+
+        <div class=d2>
+            d2  w 150px
+        </div>
+
+        <div class=d3>
+            d3  w 150px
+        </div>
+    </div>
+
+</body>
+</html>

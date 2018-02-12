@@ -1,0 +1,11 @@
+
+The top-level html files are a simple demo of the progression from 
+a box model using float/clear, through flexbox, and on to grid; at 
+least one also shows flexbox used with grid:
+
+    bxx.html  box model prior to flexbox
+    fxx.html  flexbox model
+    gxx.html  grid ; the last one combines grid with flexbox
+
+The sub-directories are additional examples of each of the models
+and gridSlides contains a few slides introducing the grid model.

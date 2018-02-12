@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+    .flex-wrapper {
+        border: 10px solid blue;
+        width:  450px;
+        height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .wrap {
+        border: 5px solid red;
+        width:  400px;
+        height: 400px;
+        display: grid;
+        grid-template-areas: "head head"
+                             "nav  main"
+                             "nav  foot";
+        grid-template-rows: 50px 1fr 30px;
+        grid-template-columns: 150px 1fr;
+        grid-gap: 4px;   /* grid-row-gap  grid-column-gap */
+    }
+
+    .d1 {
+        background: lightblue;
+        /* margin: 2px; */
+        /* height: 50px; */
+        grid-area: head;
+    }
+
+    .d2 {
+        background: lightgreen;
+        /* margin: 2px; */
+        /* height: 50px; */
+        grid-area: nav;
+    }
+    .d3 {
+        /* margin: 2px; */
+        /* height: 50px; */
+        background: yellow;
+        grid-area: main;
+    }
+    .d4 {
+        /* margin: 2px; */
+        /* height: 50px; */
+        background: orange;
+        grid-area: foot;
+    }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>RMB: combine grid with flexbox ;  like g04 but grid and its container are
+        centered in a box using my flex-wrapper class
+    </h3>
+
+    <!-- outer wrapper that uses flex box-->
+    <div class=flex-wrapper>
+
+        <!-- grid from prior example centered inside the flex-wrapper -->
+        <div class=wrap>
+            <div class=d1>
+                head  
+            </div>
+
+            <div class=d2>
+                nav 
+            </div>
+
+            <div class=d3>
+                main
+            </div>
+
+            <div class=d4>
+                footer
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
