@@ -1,0 +1,14 @@
+// tar/zip file
+tar cvf p1.tar p1
+
+// tar - see contents of tar
+tar tvf archive.tar
+
+// turnin - see assigned projects for professor
+turnin rbutler
+
+// turnin - submit assignment
+turnin rbutler awt_p1 p1.tar
+
+// ports for web tech
+5945, 5946
