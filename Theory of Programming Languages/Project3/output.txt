@@ -1,0 +1,7 @@
+Lexcial Analysis of the file test0.txt
+expression 1 : -1
+expression 2 :    wrong syntax -- Error: Token LPAREN or INT expected!
+expression 3 : 5
+expression 4 : -5
+expression 5 :    wrong syntax -- Error: Token RPAREN expected!
+expression 6 : 8
