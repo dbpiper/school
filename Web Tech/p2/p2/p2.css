@@ -30,17 +30,17 @@ html, body {
      to make sure all width is used
      to account for the fixed pixel column-gaps
   */
-  grid-template-columns: 3.33511% var(--hierarchyWidth) auto var(--inspectorWidth);
+  grid-template-columns: 6.67022% var(--hierarchyWidth) auto var(--inspectorWidth);
   /* use auto instead of 75% for the build row to account for the fixed
      pixel row-gap
   */
   grid-template-rows: auto var(--assetHeight);
-  height: 70%;
+  height: 90%;
   width:  100%;
 }
 
 .grid-content {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-align: center;
 }
@@ -80,13 +80,14 @@ html, body {
   all major browsers, with browser specific versions.
 */
 .horizontal-collapse {
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    transform: rotate(90deg);
+    -moz-transform: translateX(-50%) translateY(-50%) rotate(90deg);
+    -ms-transform: translateX(-50%) translateY(-50%) rotate(90deg);
+    -o-transform: translateX(-50%) translateY(-50%) rotate(90deg);
+    -webkit-transform: translateX(-50%) translateY(-50%) rotate(90deg);
+    transform: translateX(-50%) translateY(-50%) rotate(90deg);
     display: block;
-    margin-top: 60px;
+    margin-top: 90px;
+    position: absolute;
 }
 
 #sidebar {

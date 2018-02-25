@@ -19,7 +19,7 @@
    See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
    for this gotcha, which Amazon fell victim to.
   */
-  const COLLAPSED_WIDTH = 3.33511;
+  const COLLAPSED_WIDTH = 6.67022;
   const EXPANDED_WIDTH = 15;
 
   const COLLAPSED_HEIGHT = 10;
