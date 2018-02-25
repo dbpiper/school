@@ -15,3 +15,9 @@ turnin rbutler awt_p1 p1.tar
 
 // location of assignments
 /ntfshome/rbutler/public_html/courses/awt/p{x}stuff/
+
+// python web server
+pthon3 -m http.server --cgi {port}
+
+// will be available on
+http://www.cs.mtsu.edu:{port}

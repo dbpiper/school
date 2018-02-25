@@ -8,6 +8,7 @@
   --gapSize: 3px;
   --hierarchyWidth: 15%; /* default uncollapsed width */
   --inspectorWidth: 15%; /* default uncollapsed width */
+  --sidebarWidth: 6.67022%;
 }
 
 html, body {
@@ -26,15 +27,23 @@ html, body {
   grid-template-areas: "sidebar hierarchy build inspector"
                        "sidebar hierarchy assets inspector";
   /*
-     using auto for the center - build/assets column
+     using calc instead of auto for - build/assets column
      to make sure all width is used
      to account for the fixed pixel column-gaps
+
+     this calculation must be used as auto does not scale properly
   */
-  grid-template-columns: 6.67022% var(--hierarchyWidth) auto var(--inspectorWidth);
-  /* use auto instead of 75% for the build row to account for the fixed
-     pixel row-gap
+  grid-template-columns: var(--sidebarWidth) var(--hierarchyWidth)
+    calc(100% - (3*var(--gapSize) + var(--sidebarWidth)
+      + var(--hierarchyWidth) + var(--inspectorWidth)) )
+    var(--inspectorWidth);
+  /* use this calculation instead of 75% for the build row to account for the
+     fixed pixel row-gap
+
+     this calculation must be used as auto does not scale properly
   */
-  grid-template-rows: auto var(--assetHeight);
+  grid-template-rows: calc(100% - (var(--assetHeight) + var(--gapSize)) )
+    var(--assetHeight);
   height: 90%;
   width:  100%;
 }
@@ -57,7 +66,12 @@ html, body {
   display: inline-block;
 }
 
-#sidebar > img {
+
+#sidebar {
+  overflow: hidden;
+}
+
+#sidebar > img {  
   max-width: 100%;
   min-width: 100%;
 }
