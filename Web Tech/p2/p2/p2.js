@@ -1,5 +1,5 @@
 /*
-  Name: p2.js
+  Filename: p2.js
   Author: David Piper
   Description:
     This file sets up and handles the onclick events of the
