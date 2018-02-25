@@ -12,3 +12,6 @@ turnin rbutler awt_p1 p1.tar
 
 // ports for web tech
 5945, 5946
+
+// location of assignments
+/ntfshome/rbutler/public_html/courses/awt/p{x}stuff/

@@ -1,0 +1,71 @@
+html, body {
+  /* make the content take entire screen
+     except for some margins to match the
+     assignment image
+  */
+  height: 100%;
+}
+
+.wrap {
+  width:  100%;
+  height: 70%;
+  display: grid;
+  grid-template-areas: "sidebar hierarchy build inspector"
+                       "sidebar hierarchy assets inspector";
+  /* use auto instead of 75% for the build row to account for the fixed
+     pixel row-gap
+  */
+  grid-template-rows: auto 25%;
+  /* using fixed pixel size for sidebar, as the image
+     has a fixed size
+     using auto for the center - build/assets column
+     to make sure all width is used
+     to account for the fixed pixel sidebar and column-gaps
+  */
+  grid-template-columns: 40px 15% auto 15%;
+  grid-row-gap: 3px;
+  grid-column-gap: 3px;
+  border: 3px solid black;
+  background-color: black;
+}
+
+.grid-content {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.collapse-btn {
+    background-image: url(./images/collapse_btn.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    border: none;
+}
+
+#sidebar {
+  grid-area: sidebar;
+  background-color: #FF1513;
+}
+
+#hierarchy {
+  grid-area: hierarchy;
+  background-color: #FAEBD8;
+}
+
+#build {
+  grid-area: build;
+  background-color: #ADD8E6;
+}
+
+#assets {
+  grid-area: assets;
+  background-color: #90EE90;
+}
+
+#inspector {
+  grid-area: inspector;
+  background-color: #FFFE03;
+}
