@@ -1,3 +1,15 @@
+/*
+  use css variables which is a Candidate Recommendation for CSS
+  and is supported in: Chrome, Edge, Firefox, Opera, and Safari.
+*/
+:root {
+  --assetHeight: 25%; /* default uncollapsed height */
+  --borderColor: black;
+  --gapSize: 3px;
+  --hierarchyWidth: 15%; /* default uncollapsed width */
+  --inspectorWidth: 15%; /* default uncollapsed width */
+}
+
 html, body {
   /* make the content take entire screen
      except for some margins to match the
@@ -7,65 +19,97 @@ html, body {
 }
 
 .wrap {
-  width:  100%;
-  height: 70%;
+  background-color: var(--borderColor);
+  border: var(--gapSize) solid var(--borderColor);
   display: grid;
+  grid-gap: var(--gapSize);
   grid-template-areas: "sidebar hierarchy build inspector"
                        "sidebar hierarchy assets inspector";
+  /*
+     using auto for the center - build/assets column
+     to make sure all width is used
+     to account for the fixed pixel column-gaps
+  */
+  grid-template-columns: 3.33511% var(--hierarchyWidth) auto var(--inspectorWidth);
   /* use auto instead of 75% for the build row to account for the fixed
      pixel row-gap
   */
-  grid-template-rows: auto 25%;
-  /* using fixed pixel size for sidebar, as the image
-     has a fixed size
-     using auto for the center - build/assets column
-     to make sure all width is used
-     to account for the fixed pixel sidebar and column-gaps
-  */
-  grid-template-columns: 40px 15% auto 15%;
-  grid-row-gap: 3px;
-  grid-column-gap: 3px;
-  border: 3px solid black;
-  background-color: black;
+  grid-template-rows: auto var(--assetHeight);
+  height: 70%;
+  width:  100%;
 }
 
 .grid-content {
-  text-align: center;
   font-size: 0.8rem;
   font-weight: 600;
+  text-align: center;
 }
+
+.grid-content > div {
+  display: inline;
+}
+
+.grid-content > div.rotated-div {
+  display: block;
+}
+
+.grid-content > div > div {
+  display: inline-block;
+}
+
+#sidebar > img {
+  max-width: 100%;
+  min-width: 100%;
+}
+
+
 
 .collapse-btn {
     background-image: url(./images/collapse_btn.png);
     background-repeat: no-repeat;
     background-size: contain;
-    cursor: pointer;
-    width: 15px;
-    height: 15px;
     border: none;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    outline: none;
+}
+
+/*
+  Uses tranform rotate which is a Working Draft and supported by
+  all major browsers, with browser specific versions.
+*/
+.horizontal-collapse {
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    display: block;
+    margin-top: 60px;
 }
 
 #sidebar {
-  grid-area: sidebar;
   background-color: #FF1513;
+  grid-area: sidebar;
 }
 
 #hierarchy {
-  grid-area: hierarchy;
   background-color: #FAEBD8;
+  grid-area: hierarchy;
 }
 
 #build {
-  grid-area: build;
   background-color: #ADD8E6;
+  grid-area: build;
 }
 
 #assets {
-  grid-area: assets;
   background-color: #90EE90;
+  grid-area: assets;
 }
 
 #inspector {
-  grid-area: inspector;
   background-color: #FFFE03;
+  grid-area: inspector;
 }
