@@ -52,6 +52,8 @@ html, body {
   font-size: 0.7rem;
   font-weight: 600;
   text-align: center;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .grid-content > div {
@@ -71,7 +73,7 @@ html, body {
   overflow: hidden;
 }
 
-#sidebar > img {  
+#sidebar > img {
   max-width: 100%;
   min-width: 100%;
 }
