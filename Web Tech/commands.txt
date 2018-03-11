@@ -22,6 +22,9 @@ turnin rbutler awt_p1 p1.tar
 // python web server
 pthon3 -m http.server --cgi {port}
 
+// python web server (on Windows)
+Py -3 -m http.server --cgi {port}
+
 // will be available on
 http://www.cs.mtsu.edu:{port}
 
