@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+  Filename: p3.html
+  Author: David Piper
+  Description:
+    This file sets up the basic structure/markup for the project, including
+    things like importing the css and js and containing the text, divs, and
+    buttons.
+-->
+<html>
+<head>
+    <title>Project 3 - Message Board</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="p3.css">
+    <script type="text/javascript" src="p3.js"></script>
+</head>
+
+<body>
+  <h1> P3 - Message Board </h1>
+
+  <div id="logoBorder">
+    <div id="logo">
+      DPIPER
+    </div>
+  </div>
+
+  <form name="message" method="post" action="cgi-bin/messageHandler.py" id="messageForm">
+    <div>
+      <label for="name"> Name: </label>
+      <input type="text" id="name" name="userName">
+    </div>
+    <div>
+      <label for="message"> Message: </label>
+      <input type="text" id="message" name="userMessage">
+    </div>
+    <div id="submitDiv">
+      <button type="submit">Post Message</button>
+    </div>
+  </form>
+
+  <div id="clearStorageDiv">
+    <button>Clear Session Storage (saved name)</button>
+  </div>
+
+  <h1> Posted Msgs </h1>
+  <br/>
+  <br/>
+
+</body>
+</html>

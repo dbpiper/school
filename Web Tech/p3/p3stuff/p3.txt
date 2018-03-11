@@ -1,0 +1,51 @@
+
+                           (Advanced) Web Technologies
+                                  Spring 2018
+                                   Project 3
+
+
+turnin code:  awt_p3
+
+
+Build a simple, single-user notes-board system using cgi capability to
+register notes into a file stored at the server.  The top-level html
+page should be named:
+
+    p3.html
+
+That page will have access to code in a cgi-bin directory with it.
+
+Use a css animation to present a "personal" dancing logo at the top of
+the page, like the demo in class.  The animation should start immediately
+but only play 2 times for 2 seconds each and then stop.
+
+Use session storage to remember the username so a user can post multiple
+messages without having to re-type their name every time.  Also, provide
+a button to clear the session storage so that the username field will
+be blank again.
+
+For testing, in the top-level dir with p3.html, provide a tiny shell
+script named:
+
+    reset_msgs.sh   
+
+The script will be run this way:
+
+    sh reset_msgs.sh
+
+The script should reset the file where you are storing messages so that
+there are only 2 short messages in the file - one from Alice and one
+from Bob.
+
+
+Use turnin to submit a tar file containing all files (including the cgi-bin
+sub-dir) for the project.
+
+p3 will be graded on www.cs.mtsu.edu in this manner:
+    python3 -m http.server --cgi 5994 &   ## where 5994 is a port I choose
+
+    in chrome on another computer, visit:
+        http://www.cs.mtsu.edu:5994
+
+    When I visit that URL, there should be a file there named p3.html
+    which I will select to load into the browser.

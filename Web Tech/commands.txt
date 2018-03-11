@@ -1,3 +1,6 @@
+// ssh into www (to submit assignment and start server)
+ssh dbp3b@www.cs.mtsu.edu
+
 // tar/zip file
 tar cvf p1.tar p1
 
@@ -21,3 +24,11 @@ pthon3 -m http.server --cgi {port}
 
 // will be available on
 http://www.cs.mtsu.edu:{port}
+
+// examples from book
+/ntfshome/rbutler/public_html/courses/awt/h5MM/
+
+// delete Mac junk files
+find . -type f -name '._*' -delete
+find . -type f -name '.DS_Store' -delete
+
