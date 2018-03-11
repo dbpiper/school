@@ -1,2 +1,2 @@
 #!/bin/bash
-cp -R "restoreMsgs.txt" "msgs.txt"
+cp -R "bak.txt" "msgs.txt"
