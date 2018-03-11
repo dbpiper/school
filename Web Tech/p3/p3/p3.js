@@ -10,11 +10,11 @@
   'use strict';
 
   function readMessages(messageBox) {
-    var url = 'msgs.txt';
+    const url = 'msgs.txt';
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.addEventListener('load', function(event) {
-      var data = event.target;
+      const data = event.target;
       if (data.status == 0 || data.status == 200) {
         messageBox.innerHTML = data.responseText;
       }
@@ -24,8 +24,23 @@
   }
 
   window.addEventListener('load', function() {
-    var messageBox = document.getElementById('messageBox');
+    const messageBox = document.getElementById('messageBox');
+    const userNameInput = document.getElementById('name');
+    const submitButton = document.querySelector('#submitDiv > button');
+    const clearButton = document.querySelector('#clearStorageDiv > button');
+    submitButton.addEventListener('click', function() {
+        if (!sessionStorage.getItem('name')) {
+          sessionStorage.setItem('name', userNameInput.value);
+        }
+    });
+    clearButton.addEventListener('click', function() {
+      sessionStorage.clear(); // just remove everything instead of only removingItem
+      location.reload(); // reload the page to remove the item from the box
+    });
+
     readMessages(messageBox);
+
+    userNameInput.value = sessionStorage.getItem('name');
 
   });
 })();
