@@ -5,8 +5,51 @@
     This file handles the styling for the SPA app for project 2.
 */
 
+/* some variables to make the dance animation a bit more modular/easier to change */
+:root {
+  --danceAngle: 25deg;
+  --negDanceAngle: -25deg; /* css doesn't like haveing -var(--danceAngle) */
+}
+
 h1 {
   font-size: 1.4rem;
+}
+
+@keyframes dance
+{
+  0% {
+    left: 0;
+  }
+  10% {
+    transform: rotate(var(--danceAngle));
+  }
+  20% {
+    transform: rotate(var(--negDanceAngle));
+  }
+  30% {
+    transform: rotate(var(--danceAngle));
+  }
+  40% {
+    transform: rotate(var(--negDanceAngle));
+  }
+  50% {
+    transform: rotate(var(--danceAngle));
+  }
+  60% {
+    transform: rotate(var(--negDanceAngle));
+  }
+  70% {
+    transform: rotate(var(--danceAngle));
+  }
+  80% {
+    transform: rotate(var(--negDanceAngle));
+  }
+  90% {
+    transform: rotate(var(--danceAngle));
+  }
+  100% {
+    left: 85%;
+  }
 }
 
 #logoBorder {
@@ -14,6 +57,9 @@ h1 {
   width: 150px;
   /* top | right | bottom | left */
   margin: 40px 20px 40px 20px;
+  animation: dance 2s;
+  animation-iteration-count: 2;
+  position: relative;
 }
 
 #logo {
