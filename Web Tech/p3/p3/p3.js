@@ -1,9 +1,8 @@
 /*
-  Filename: p2.js
+  Filename: p3.js
   Author: David Piper
   Description:
-    This file sets up and handles the onclick events of the
-    collapse buttons.
+    This file handles loading the messages from the file and registering the event handlers.
 */
 
 (function() {
@@ -35,7 +34,7 @@
     });
     clearButton.addEventListener('click', function() {
       sessionStorage.clear(); // just remove everything instead of only removingItem
-      location.reload(); // reload the page to remove the item from the box
+      userNameInput.value = '';
     });
 
     readMessages(messageBox);
