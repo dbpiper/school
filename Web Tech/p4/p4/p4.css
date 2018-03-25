@@ -1,0 +1,75 @@
+/*
+  Filename: p4.css
+  Author: David Piper
+  Description:
+    This file handles the styling for project 4.
+*/
+
+#content {
+  border: 1px solid black;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-bottom: 2%;
+}
+
+#content > h1 {
+  text-align: center;
+}
+
+#uploadSection {
+  margin-top: 5%;
+}
+
+#dragbox {
+  width: 40%;
+  border: 1px solid black;
+  padding: 1%;
+}
+
+#uploadButtonForm {
+  margin-top: 5%;
+}
+
+.detailsWrapper {
+  border: 1px solid black;
+  font-size: 1.5rem;
+}
+
+summary {
+  outline: none; /* get rid of blue border made on click */
+  user-select: none;
+  cursor: pointer;
+}
+
+.detailsWrapper > details {
+  margin: 1%;
+  background-color: #065367;
+  color: white;
+  padding-left: 1%;
+  padding-top: 0.5%;
+  padding-bottom: 0.5%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dfd {
+
+}
