@@ -194,8 +194,9 @@
       <form id="uploadButtonForm" enctype="multipart/form-data" method="post">
         <div class="row">
           <label for="fileToUpload">Click here to upload a file</label><br />
-          <input type="file" name="fileToUpload" id="fileToUpload" onchange="p4Module.fileSelected();"/>
+          <input type="file" name="fileToUpload" id="fileToUpload" multiple onchange="p4Module.uploadFiles()"/>
         </div>
+        <div id="progressNumber"></div>
       </form>
     </div>
 
