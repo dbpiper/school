@@ -35,24 +35,52 @@
 
 .detailsWrapper {
   border: 1px solid black;
-  font-size: 1.5rem;
+  background-color: #EEEEEE;
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  padding-bottom: 1%; /* can't have margin-bottom on summary as this pushes p down */
 }
 
 summary {
   outline: none; /* get rid of blue border made on click */
-  user-select: none;
-  cursor: pointer;
+  user-select: none; /* get rid of text highlighting */
+  cursor: pointer; /* make the pointer hand, to make it clear the object is clickable */
 }
 
-.detailsWrapper > details {
+.detailsWrapper > details > summary {
   margin: 1%;
+  margin-bottom: 0;
   background-color: #065367;
+  font-size: 1.5rem;
   color: white;
   padding-left: 1%;
   padding-top: 0.5%;
   padding-bottom: 0.5%;
 }
 
+.detailsWrapper > details > p {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 1%;
+  margin-right: 1%;
+  background-color: #AAAAAA;
+  font-size: 1rem;
+  color: black;
+  padding-left: 1%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+.subDetailsWrapper > details > summary {
+  margin-left: 1%;
+  margin-right: 1%;
+  background-color: #065367;
+  font-size: 1.3rem;
+  color: white;
+  padding-left: 1.5%;
+  padding-top: 0.5%;
+  padding-bottom: 0.5%;
+}
 
 
 
