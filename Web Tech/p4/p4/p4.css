@@ -82,9 +82,43 @@ summary {
   padding-bottom: 0.5%;
 }
 
+.subDetailContent {
+  margin-left: 1%;
+  margin-right: 1%;
+}
 
+.imageAndVideo > img {
+  width: 150px;
+  height: auto;
+  border-radius: 10%;
+}
 
+.downloadVideoWrapper {
+  font-size: 0.8rem;
+  background-color: white;
+  border-radius: 10%;
+  margin-left: 2%;
+}
 
+.downloadVideoWrapper > a {
+  padding-left: 1%;
+  padding-right: 1%;
+  padding-top: 0.5%;
+  padding-bottom: 0.5%;
+}
+
+.videoWrapper {
+  margin-left: 7%;
+}
+
+.videoWrapper > p {
+  margin-top: 0;
+}
+
+.videoWrapper > video {
+  width: 235px;
+  height: auto;
+}
 
 
 
