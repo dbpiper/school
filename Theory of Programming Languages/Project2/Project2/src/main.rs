@@ -14,6 +14,8 @@ use std::io::prelude::*;
 use std::io;
 use std::iter::FromIterator;
 use std::collections::HashMap;
+use std::time::Duration;
+use std::thread;
 
 mod student;
 use student::Student;
@@ -21,17 +23,17 @@ use student::Student;
 fn main() { 
     println!("Please enter the name of the file containing the grades.");
 
-    let mut gradesFilename = String::new();
+    let mut grades_filename = String::new();
 
     // read the input from the user, display error if not able to
-    io::stdin().read_line(&mut gradesFilename)
+    io::stdin().read_line(&mut grades_filename)
         .expect("Failed to read the filename");
     
     // remove newline/whitespace from the input
-    gradesFilename = gradesFilename.trim().to_string();
+    grades_filename = grades_filename.trim().to_string();
 
     // attempt to open the file, display error if not able to
-    let mut f = File::open(gradesFilename).expect("file not found");
+    let mut f = File::open(grades_filename).expect("file not found");
 
     let mut contents = String::new();
     // attempt to read the file to string, display error if not able to
@@ -91,13 +93,19 @@ fn main() {
                 with C# {}: {:?}", id, student),
             None => println!("There was no student found with the given C# {}", id)
         }
+
+        thread::sleep(Duration::from_millis(1000));
         
     }
+    
+    thread::sleep(Duration::from_millis(1000));
 
     println!("\n\n");
     println!("The two queries are complete.\nNow printing information for all students.");
     println!("\n\n");
 
+    thread::sleep(Duration::from_millis(1000));
+    
     for (id, student) in &students {
         println!("The following is the information for the student \
                 with C# {}: {:?}", id, student);
