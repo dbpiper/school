@@ -1,3 +1,17 @@
+/*
+ * Author: David Piper
+ * Filename: student.rs
+ * Description:
+ *  The purpose of this file is to act as a module
+ *  containing the definition and implementation
+ *  of the Student struct, which is the closest
+ *  thing that Rust has to Classes per the
+ *  requirement stated in the project description.
+ *
+ *  This struct has all the required member data
+ *  and methods, including a constructor.
+ */
+
 // The struct is public/accessible, however its member data is not
 #[derive(Debug)] // make it easy to print the struct
 pub struct Student {
@@ -87,8 +101,6 @@ impl Student {
     // unclear if we were supposed to do this or not as it says that letter grade
     // is one of the required data members), this function is provided
     // instead to allow access to the letter grade.
-    //
-    // This is also needed to be able to print the grade
     pub fn get_letter_grade(&self) -> &String {
        &self.letter_grade 
     }

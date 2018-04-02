@@ -1,6 +1,0 @@
-[package]
-name = "Project2"
-version = "0.1.0"
-authors = ["David Piper <dbpiper@gmail.com>"]
-
-[dependencies]
