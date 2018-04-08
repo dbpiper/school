@@ -105,4 +105,25 @@ impl Student {
        &self.letter_grade 
     }
 
+    // we need these accessors to be able to find the average/max scores of each
+
+    pub fn get_cla_score(&self) -> u32 {
+        self.cla_score
+    }
+
+    pub fn get_ola_score(&self) -> u32 {
+        self.ola_score 
+    }
+
+    pub fn get_quiz_score(&self) -> u32 {
+        self.quiz_score    
+    }
+
+    pub fn get_exam_score(&self) -> u32 {
+        self.exam_score    
+    }
+
+    pub fn get_final_score(&self) -> u32 {
+        self.final_score
+    }
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+  Filename: p4.html
+  Author: David Piper
+  Description:
+    This file sets up the basic structure/markup for the project, including
+    things like importing the css and js and containing the text, divs, and
+    buttons.
+-->
+<html>
+<head>
+    <title>Project 5 - 2D Canvas</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="p5.css">
+    <script type="text/javascript" src="P5.js"></script>
+    <script type="text/javascript" src="Dart.js"></script>
+</head>
+
+<body>
+  <form action="javascript:void(0);" onsubmit="P5.fire();">
+    <label for="canvas_dimension">Dimensions of Square Canvas</label>
+    <input id="canvas_dimension" name="canvas_dimension" type="number"
+      title="Enter a number between 300 and 900 in increments of 100."
+      step="100" min="300" max="900" value="500"
+      required="true"
+    >
+    <br/>
+    <br/>
+    <!--
+      The lab description did not specify if we should have increments/steps
+      of 100 for the darts. I opted to not do so as this will allow better
+      testing of the pi approximation.
+    -->
+    <label for="num_darts">Number of Darts to Throw</label>
+    <input id="num_darts" name="num_darts" type="number"
+      title="Enter a number between 300 and 900."
+      min="300" max="900" value="500"
+      required="true"
+    >
+    <br/>
+    <br/>
+    <input id="fire_btn" type="submit" value="Fire!" disabled>
+  </form>
+  <br/>
+  <br/>
+  <canvas id="canvas" width="0" height="0">
+  </canvas>
+  <br/>
+  <br/>
+  <p id="pi_p">
+    Pi Estimate: <span id="pi_approximation" />
+  </p>
+</body>
+</html>
