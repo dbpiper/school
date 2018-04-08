@@ -1,3 +1,11 @@
+/*
+  Filename: Dart.js
+  Author: David Piper
+  Description:
+    The Dart module, which defines the Dart class which handles dart-related
+    actions such as drawing the dart and setting its color, this is also
+    used by P5 module to count the number of darts in/out of board.
+*/
 var Dart = (function() {
   'use strict';
 
@@ -117,8 +125,14 @@ var Dart = (function() {
     // of a point from the origin and if it is <= the radius of the board
     // then it is on the board
     static isPointOnBoard(canvasDimension, point) {
-      return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2))
-        <= canvasDimension/2;
+      const distanceFromCenter = Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+      return distanceFromCenter < canvasDimension/2
+      || Dart.floatAlmostEqual(distanceFromCenter, canvasDimension/2);
+    }
+
+    // need this function to test float equality/closeness
+    static floatAlmostEqual(n1, n2) {
+      return Math.abs(n1 - n2) <= Math.EPSILON;
     }
   }
 
