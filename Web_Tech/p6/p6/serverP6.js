@@ -54,7 +54,6 @@ wss.on('connection', function(ws) {
       ws: ws,
       playerNum: numClients,
     }
-    console.log('client connecting');
     clients[client.playerNum-1] = client;
     let message = {
       type: MessageTypes.PlayerNum,
@@ -75,11 +74,8 @@ wss.on('connection', function(ws) {
       }
       numClients--;
       if (numClients == 0) {
-        console.log('deleting meshes');
         meshes = JSON.parse(JSON.stringify(UNINITIALIZED_MESHES));
-        console.log(meshes);
       }
-      console.log('Num clients: ' + numClients);
       console.log('Removed: Player ' + JSON.stringify(client.playerNum));
     });
 });
@@ -132,7 +128,6 @@ function isEmptyObject(object) {
 }
 
 function sendMeshesToClient(client) {
-  console.log('sending meshes to client: ' + client);
     const message = {
       type: MessageTypes.MeshChange,
       p1Mesh: {
@@ -160,7 +155,6 @@ function handleMessage(message) {
     meshes.p1Mesh = messageObj.p1Mesh;
     meshes.p2Mesh = messageObj.p2Mesh;
   } else if (messageObj.type == MessageTypes.Command) {
-    console.log(messageObj);
     doCommand(messageObj.playerNum, messageObj.command);
     const message = {
       type: MessageTypes.MeshChange,

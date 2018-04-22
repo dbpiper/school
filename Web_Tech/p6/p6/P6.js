@@ -33,7 +33,7 @@ P6 = (function() {
   let camera;
   let renderer;
   let socket;
-  
+
   function draw() {
     renderer.render(scene, camera);
   }
@@ -54,8 +54,6 @@ P6 = (function() {
     let messageObj = JSON.parse(event.data);
 
     if (messageObj.type == MessageTypes.MeshChange) {
-      console.log(event.data);
-
       p1Mesh.position.x = messageObj.p1Mesh.position.x;
       p1Mesh.position.y = messageObj.p1Mesh.position.y;
       p1Mesh.position.z = messageObj.p1Mesh.position.z;
@@ -74,14 +72,12 @@ P6 = (function() {
     } else if (messageObj.type == MessageTypes.PlayerNum) {
       playerNum = messageObj.playerNum;
     } else {
-      console.log(event.data);
       console.log('Invalid command!');
     }
   }
 
   function sendMeshesStart() {
     socketOpen = true; // the socket is now open
-    console.log('sending meshes');
     const message = {
       type: MessageTypes.MeshInit,
       p1Mesh: {
@@ -109,7 +105,6 @@ P6 = (function() {
         command: command,
         playerNum: playerNum,
       }
-      console.log(message);
       socket.send(JSON.stringify(message));
     }
   }
