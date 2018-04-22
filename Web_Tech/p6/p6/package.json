@@ -1,0 +1,15 @@
+{
+  "name": "p6",
+  "version": "1.0.0",
+  "description": "Project 6 for Advanced Web Tech.",
+  "main": "serverP6.js",
+  "dependencies": {
+    "ws": "^5.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Piper",
+  "license": "ISC"
+}

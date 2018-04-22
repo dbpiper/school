@@ -100,7 +100,11 @@ var P5 = (function() {
       sourceNode.start(0);
   }
 
-  // plays the gunshot sound
+  // load and play the gunshot sound
+  // this is needed to be done on button click
+  // rather than on page load to support iOS Safari
+  // as it only allows audio to be played/loaded
+  // if it was initiated by a user event, like a button click
   function loadAndPlayGunshotSound() {
     if (!audioBuffer) {
         audioContext = new AudioContext();
@@ -135,6 +139,11 @@ var P5 = (function() {
     canvas = null;
     context = null;
   }
+  
+  // this is needed to be done on button click
+  // rather than on page load to support iOS Safari
+  // as it only allows audio to be played/loaded
+  // if it was initiated by a user event, like a button click
 
   //// load the sound file
   //window.addEventListener('load', function() {

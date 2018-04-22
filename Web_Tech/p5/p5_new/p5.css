@@ -1,0 +1,12 @@
+/*
+  Filename: p5.css
+  Author: David Piper
+  Description:
+    This file handles the styling for project 5.
+    Which is only setting the display of pi's paragraph to none
+    until the fire button has been pressed.
+*/
+
+#pi_p {
+  display: none;
+}
