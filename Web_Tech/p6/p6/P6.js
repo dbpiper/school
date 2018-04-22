@@ -1,6 +1,15 @@
 P6 = (function() {
   'use strict';
 
+  /*
+    Filename: P6.js
+    Author: David Piper
+    Description:
+      The purpose of this file is to act as the client for the 3D cube game.
+      The client only handles receiving keyboard events and updating mesh
+      positions and rotations based on information from the server.
+  */
+
   const port = 5946;
   const wwwUrl = 'ws://www.cs.mtsu.edu:';
   const localUrl = 'ws://localhost:';

@@ -1,6 +1,28 @@
 (function() {
   'use strict';
 
+  /*
+    Filename: serverP6.js
+    Author: David Piper
+    Description:
+      The purpose of this file is to act as the server for Project 6.
+      Furthermore, it handles all of the logic for this project, the
+      two clients only handle drawing of the meshes, and handling keyboard
+      events.
+
+      The server receives the keyboard events, which tell it which command
+      to perform, manipulates the respective mesh, and then transmits
+      the updates mesh positions/rotations to both clients.
+
+      This approach means that there is not a subtle delay between clients,
+      or in a gaming sense, it means that one player does not have a slight
+      advantage over the other in making moves. Since nothing is handled on
+      the client, each player is getting the updated mesh positions and
+      rotations at about the same time. It also means that this game
+      is safe from client-side js hacking, since one cannot inject invalid
+      moves into the client and have this transmitted to the server.
+  */
+
   const port = 5946;
   const rotateStepSize = 0.08;
   const moveStepSize = 2;
